@@ -20,7 +20,7 @@ export default function WebsitesHealthCount({ websites }: {websites: Website[]})
   );
 
   return (
-    <div className="flex w-full items-center justify-evenly sm:justify-end space-x-3 text-sm">
+    <div className="flex w-full sm:w-fit items-center justify-evenly sm:justify-end space-x-3 text-sm">
       <div className="bg-green-50 border border-green-100 hover:border-green-200 p-1.5 rounded-sm w-1/3 sm:w-28">
         <h4 className="font-semibold text-green-600">Passing</h4>
         <p className="font-bold text-green-700">{stats.passing}</p>

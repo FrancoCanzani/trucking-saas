@@ -6,7 +6,7 @@ export default function DashboardTableMobileView({ websites }: { websites: Websi
     return (
         <div className="sm:hidden space-y-4">
             {websites.map((website) => (
-                <div key={website.id} className="bg-white space-y-1 py-2 px-2.5 rounded-sm border hover:shadow max-w-sm">
+                <div key={website.id} className="bg-white space-y-1 py-2 px-2.5 rounded-sm border hover:shadow max-w-xs overflow-scroll">
                     <div className="flex items-center justify-start space-x-1">
                         <div
                             className={`h-2 min-w-2 rounded-full ${
