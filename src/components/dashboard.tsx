@@ -21,15 +21,12 @@ import { Website } from '@/lib/types';
 import { columns } from '@/app/dashboard/columns';
 import DasboardTable from './dashboard-table';
 import {
-  SignInButton,
   SignOutButton,
-  SignedIn,
-  SignedOut,
 } from '@clerk/nextjs';
 
 export default function Dashboard({ websites }: { websites: Website[] }) {
   const { isSignedIn, user } = useUser();
-
+console.log(websites)
   return (
     <TooltipProvider>
       <div className='flex min-h-screen w-full flex-col bg-muted/40'>

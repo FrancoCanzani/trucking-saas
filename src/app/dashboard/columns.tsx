@@ -16,19 +16,24 @@ export const columns: ColumnDef<Website>[] = [
     id: 'status',
     cell: ({ row }) => {
       const healthChecks: HealthCheck[] = row.getValue('healthChecks');
-      const lastCheck: HealthCheck = healthChecks.slice(-1)[0];
+      const lastCheck: HealthCheck | undefined = healthChecks.slice(-1)[0];
       return (
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger>
               <div
                 className={`h-4 w-4 rounded-full ${
-                  lastCheck.status > 200 ? 'bg-red-600' : 'bg-green-400'
+                  lastCheck && lastCheck.status > 200 ? 'bg-red-600' : 
+                  lastCheck && lastCheck.status <= 200 ? 'bg-green-400' : 
+                  'bg-gray-400'
                 }`}
               ></div>
             </TooltipTrigger>
             <TooltipContent className='font-medium'>
-              {lastCheck.status > 200 ? 'Failing' : 'Passing'}
+              {lastCheck ? 
+                (lastCheck.status > 200 ? 'Failing' : 'Passing') : 
+                'No checks yet'
+              }
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
@@ -56,12 +61,13 @@ export const columns: ColumnDef<Website>[] = [
       const healthChecks: HealthCheck[] = row.getValue('healthChecks');
       const slicedHealthChecks = healthChecks.slice(-24);
       const maxResponseTime = Math.max(
-        ...slicedHealthChecks.map((check) => check.response_time)
+        ...slicedHealthChecks.map((check) => check.response_time),
+        1  // Fallback to 1 if array is empty
       );
 
       return (
         <div className='flex items-end group justify-center w-fit space-x-1'>
-          {slicedHealthChecks.map((check) => {
+          {slicedHealthChecks.length > 0 ? slicedHealthChecks.map((check) => {
             const minHeight = 25;
             const maxHeight = 35;
             const normalizedHeight = Math.max(
@@ -107,7 +113,9 @@ export const columns: ColumnDef<Website>[] = [
                 </Tooltip>
               </TooltipProvider>
             );
-          })}
+          }) : (
+            <div className='text-sm text-gray-500'>No health checks yet</div>
+          )}
         </div>
       );
     },
