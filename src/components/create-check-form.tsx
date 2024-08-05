@@ -14,17 +14,18 @@ export default function CreateCheckForm() {
     const formData = new FormData(e.currentTarget);
 
     try {
-      const healthCheckPromise = createWebsiteToCheck(formData);
+      const res = createWebsiteToCheck(formData);
 
-      toast.promise(healthCheckPromise, {
-        loading: 'Performing health check...',
+      toast.promise(res, {
+        loading: 'Adding site...',
         success: () => {
+          ref?.current?.reset()
           return `Added site to your websites.`;
         },
         error: 'Error adding sites.',
       });
 
-      ref?.current?.reset()
+      
     } catch (error) {
       toast.error('Error adding site.');
     }
