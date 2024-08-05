@@ -28,7 +28,7 @@ import DashboardTableMobileView from './dashboard-table-mobile-view';
 
 export default function Dashboard({ websites }: { websites: Website[] }) {
   const { isSignedIn, user } = useUser();
-console.log(websites[0].healthChecks)
+
   return (
     <TooltipProvider>
       <div className='flex min-h-screen w-full flex-col bg-muted/40'>
