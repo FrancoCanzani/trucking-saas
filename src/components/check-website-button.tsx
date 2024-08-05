@@ -1,6 +1,5 @@
 import { Website } from '@/lib/types';
 import { createHealthCheck } from '@/lib/actions';
-import { SubmitButton } from './submit-button';
 import { toast } from 'sonner';
 
 export default function CheckWebsiteButton({ website }: { website: Website }) {
@@ -21,9 +20,7 @@ export default function CheckWebsiteButton({ website }: { website: Website }) {
   }
   return (
     <form action={handleSubmit}>
-      <SubmitButton className='text-xs font-bold hover:underline rounded-md px-3 p-0 h-0 text-black bg-none border-none'>
-        Check
-      </SubmitButton>
+      <button>Check website</button>
     </form>
   );
 }

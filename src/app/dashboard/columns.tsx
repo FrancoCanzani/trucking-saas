@@ -3,13 +3,24 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { HealthCheck, Website } from '@/lib/types';
 import { formatDistance } from 'date-fns';
-import CheckWebsiteButton from '@/components/check-website-button';
+import WebsiteRowAction from '@/components/check-website-button';
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
   TooltipProvider,
 } from '@/components/ui/tooltip';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Ellipsis } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import DeleteWebsiteButton from '@/components/delete-website-button';
 
 export const columns: ColumnDef<Website>[] = [
   {
@@ -23,17 +34,20 @@ export const columns: ColumnDef<Website>[] = [
             <TooltipTrigger>
               <div
                 className={`h-4 w-4 rounded-full ${
-                  lastCheck && lastCheck.status > 200 ? 'bg-red-600' : 
-                  lastCheck && lastCheck.status <= 200 ? 'bg-green-400' : 
-                  'bg-gray-400'
+                  lastCheck && lastCheck.status > 200
+                    ? 'bg-red-600'
+                    : lastCheck && lastCheck.status <= 200
+                    ? 'bg-green-400'
+                    : 'bg-gray-400'
                 }`}
               ></div>
             </TooltipTrigger>
             <TooltipContent className='font-medium'>
-              {lastCheck ? 
-                (lastCheck.status > 200 ? 'Failing' : 'Passing') : 
-                'No checks yet'
-              }
+              {lastCheck
+                ? lastCheck.status > 200
+                  ? 'Failing'
+                  : 'Passing'
+                : 'No checks yet'}
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
@@ -62,58 +76,63 @@ export const columns: ColumnDef<Website>[] = [
       const slicedHealthChecks = healthChecks.slice(-24);
       const maxResponseTime = Math.max(
         ...slicedHealthChecks.map((check) => check.response_time),
-        1  // Fallback to 1 if array is empty
+        1 // Fallback to 1 if array is empty
       );
 
       return (
         <div className='flex items-end group justify-center w-fit space-x-1'>
-          {slicedHealthChecks.length > 0 ? slicedHealthChecks.map((check) => {
-            const minHeight = 25;
-            const maxHeight = 35;
-            const normalizedHeight = Math.max(
-              minHeight,
-              (check.response_time / maxResponseTime) * maxHeight
-            );
+          {slicedHealthChecks.length > 0 ? (
+            slicedHealthChecks.map((check) => {
+              const minHeight = 25;
+              const maxHeight = 35;
+              const normalizedHeight = Math.max(
+                minHeight,
+                (check.response_time / maxResponseTime) * maxHeight
+              );
 
-            return (
-              <TooltipProvider key={check.id}>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <div
-                      className={`p-0.5 group-hover:opacity-60 hover:!opacity-100 hover:-translate-y-1 transition-all duration-150 ${
-                        check.status === 200 ? 'bg-green-400' : 'bg-red-600'
-                      }`}
-                      style={{ height: `${normalizedHeight}px`, width: '2px' }}
-                    />
-                  </TooltipTrigger>
-                  <TooltipContent className='space-y-2 text-xs'>
-                    {check.status > 200 ? (
-                      <div className='flex items-center font-medium justify-start text-sm'>
-                        Failed
-                        <p className='capitalize font-normal ml-1'>
-                          {formatDistance(check.checked_at, new Date(), {
-                            addSuffix: true,
-                          })}
-                        </p>
+              return (
+                <TooltipProvider key={check.id}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div
+                        className={`p-0.5 group-hover:opacity-60 hover:!opacity-100 hover:-translate-y-1 transition-all duration-150 ${
+                          check.status === 200 ? 'bg-green-400' : 'bg-red-600'
+                        }`}
+                        style={{
+                          height: `${normalizedHeight}px`,
+                          width: '2px',
+                        }}
+                      />
+                    </TooltipTrigger>
+                    <TooltipContent className='space-y-2 text-xs'>
+                      {check.status > 200 ? (
+                        <div className='flex items-center font-medium justify-start text-sm'>
+                          Failed
+                          <p className='capitalize font-normal ml-1'>
+                            {formatDistance(check.checked_at, new Date(), {
+                              addSuffix: true,
+                            })}
+                          </p>
+                        </div>
+                      ) : (
+                        <div className='flex items-center font-medium justify-start text-sm'>
+                          Passed
+                          <p className='capitalize font-normal ml-1'>
+                            {formatDistance(check.checked_at, new Date(), {
+                              addSuffix: true,
+                            })}
+                          </p>
+                        </div>
+                      )}
+                      <div className='flex text-sm items-center font-medium justify-start space-x-2'>
+                        {check.response_time} ms {check.status} status
                       </div>
-                    ) : (
-                      <div className='flex items-center font-medium justify-start text-sm'>
-                        Passed
-                        <p className='capitalize font-normal ml-1'>
-                          {formatDistance(check.checked_at, new Date(), {
-                            addSuffix: true,
-                          })}
-                        </p>
-                      </div>
-                    )}
-                    <div className='flex text-sm items-center font-medium justify-start space-x-2'>
-                      {check.response_time} ms {check.status} status
-                    </div>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            );
-          }) : (
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              );
+            })
+          ) : (
             <div className='text-sm text-gray-500'>No health checks yet</div>
           )}
         </div>
@@ -168,7 +187,25 @@ export const columns: ColumnDef<Website>[] = [
     id: 'check',
     cell: ({ row }) => {
       const website: Website = row.original;
-      return <CheckWebsiteButton website={website} />;
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant='ghost' className='h-8 w-8 p-0'>
+              <span className='sr-only'>Open menu</span>
+              <Ellipsis className='h-4 w-4' />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align='end'>
+            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            <DropdownMenuItem>
+              <WebsiteRowAction website={website} />
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <DeleteWebsiteButton website={website} />
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      );
     },
   },
 ];

@@ -61,3 +61,26 @@ export async function createHealthCheck(website: Website) {
     throw new Error('Failed to create health check');
   }
 }
+
+export async function deleteWebsite(websiteId: number) {
+  const user = await currentUser();
+
+  if (!user || !websiteId) {
+    throw new Error('User is not authenticated or website ID is missing');
+  }
+
+  try {
+    await sql`
+      DELETE FROM health_checks WHERE website_id=${websiteId};
+    `;
+
+    await sql`
+      DELETE FROM websites WHERE id=${websiteId};
+    `;
+
+    await revalidatePath('/dashboard');
+  } catch (error) {
+    console.error('Error deleting website:', error);
+    throw new Error('Failed to delete website');
+  }
+}
