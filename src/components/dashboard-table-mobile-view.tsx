@@ -2,6 +2,7 @@ import { Website } from '@/lib/types';
 import CheckWebsiteButton from '@/components/check-website-button';
 import { formatDistance } from 'date-fns';
 import DeleteWebsiteButton from './delete-website-button';
+import { SquareArrowOutUpRight } from 'lucide-react';
 
 export default function DashboardTableMobileView({
   websites,
@@ -9,13 +10,13 @@ export default function DashboardTableMobileView({
   websites: Website[];
 }) {
   return (
-    <div className='sm:hidden space-y-4'>
+    <div className='md:hidden space-y-4'>
       {websites.map((website) => (
         <div
           key={website.id}
           className='bg-white space-y-1 py-2 px-2.5 rounded-sm border hover:shadow'
         >
-          <div className='flex items-center justify-start space-x-1'>
+          <div className='flex items-center justify-start space-x-2'>
             <div
               className={`h-2 min-w-2 rounded-full ${
                 website.healthChecks.slice(-1)[0] &&
@@ -28,11 +29,14 @@ export default function DashboardTableMobileView({
               }`}
             ></div>
             <h3
-              className='font-medium truncate overflow-ellipsis max-w-[18rem]'
+              className='font-medium truncate overflow-ellipsis max-w-[16rem] sm:max-w-md'
               title={website.url}
             >
               {website.url}
             </h3>
+            <a href={website.url} target='_blank'>
+              <SquareArrowOutUpRight size={16} />
+            </a>
           </div>
           <p className='text-sm text-gray-600'>
             Status:{' '}
@@ -62,13 +66,13 @@ export default function DashboardTableMobileView({
             <div className='flex items-center justify-end space-x-2'>
               <CheckWebsiteButton
                 website={website}
-                className='text-xs hover:underline'
+                className='text-xs hover:underline font-medium'
               >
                 Check
               </CheckWebsiteButton>
               <DeleteWebsiteButton
                 website={website}
-                className='text-xs hover:underline'
+                className='text-xs hover:underline font-medium'
               >
                 Delete
               </DeleteWebsiteButton>
