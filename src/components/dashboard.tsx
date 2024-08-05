@@ -20,6 +20,12 @@ import CreateCheckForm from '@/components/create-check-form';
 import { Website } from '@/lib/types';
 import { columns } from '@/app/dashboard/columns';
 import DasboardTable from './dashboard-table';
+import {
+  SignInButton,
+  SignOutButton,
+  SignedIn,
+  SignedOut,
+} from '@clerk/nextjs';
 
 export default function Dashboard({ websites }: { websites: Website[] }) {
   const { isSignedIn, user } = useUser();
@@ -29,6 +35,7 @@ export default function Dashboard({ websites }: { websites: Website[] }) {
       <div className='flex min-h-screen w-full flex-col bg-muted/40'>
         <div className='flex flex-col sm:gap-4 sm:py-4'>
           <header className='sticky top-0 z-30 flex h-14 items-center justify-end gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6'>
+          <SignOutButton />
             {isSignedIn && (
               <p className='font-medium'>Hello, {user.firstName} 👋</p>
             )}
