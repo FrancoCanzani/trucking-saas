@@ -24,6 +24,7 @@ import {
   SignOutButton,
 } from '@clerk/nextjs';
 import WebsitesHealthCount from './website-health-count';
+import DashboardTableMobileView from './dashboard-table-mobile-view';
 
 export default function Dashboard({ websites }: { websites: Website[] }) {
   const { isSignedIn, user } = useUser();
@@ -41,17 +42,17 @@ console.log(websites[0].healthChecks)
           <main className='grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8'>
             <Tabs defaultValue='all'>
               <div className='flex items-center justify-between'>
-                <TabsList>
+                <TabsList className=''>
                   <TabsTrigger value='all'>All</TabsTrigger>
-                  <TabsTrigger value='active'>Active</TabsTrigger>
-                  <TabsTrigger value='draft'>Draft</TabsTrigger>
+                  <TabsTrigger value='active' className='hidden sm:block'>Active</TabsTrigger>
+                  <TabsTrigger value='draft' className='hidden sm:block'>Draft</TabsTrigger>
                 </TabsList>
                 <CreateCheckForm />
               </div>
               <TabsContent value='all'>
                 <Card x-chunk='dashboard-06-chunk-0'>
                   <CardHeader className='flex flex-row items-end justify-between w-full'>
-                    <div>                    
+                    <div className='hidden sm:block'>                    
                     <CardTitle>Websites</CardTitle>
                     <CardDescription>
                       Manage your products and view their uptime.
@@ -61,6 +62,7 @@ console.log(websites[0].healthChecks)
                   </CardHeader>
                   <CardContent>
                     <DasboardTable columns={columns} data={websites} />
+                    <DashboardTableMobileView websites={websites} />
                   </CardContent>
                   <CardFooter>
                     <div className='text-xs text-muted-foreground'>
