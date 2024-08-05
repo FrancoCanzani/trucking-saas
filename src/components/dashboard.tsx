@@ -23,10 +23,11 @@ import DasboardTable from './dashboard-table';
 import {
   SignOutButton,
 } from '@clerk/nextjs';
+import WebsitesHealthCount from './website-health-count';
 
 export default function Dashboard({ websites }: { websites: Website[] }) {
   const { isSignedIn, user } = useUser();
-console.log(websites)
+console.log(websites[0].healthChecks)
   return (
     <TooltipProvider>
       <div className='flex min-h-screen w-full flex-col bg-muted/40'>
@@ -49,11 +50,14 @@ console.log(websites)
               </div>
               <TabsContent value='all'>
                 <Card x-chunk='dashboard-06-chunk-0'>
-                  <CardHeader>
+                  <CardHeader className='flex flex-row items-end justify-between w-full'>
+                    <div>                    
                     <CardTitle>Websites</CardTitle>
                     <CardDescription>
                       Manage your products and view their uptime.
                     </CardDescription>
+                    </div>
+                    <WebsitesHealthCount websites={websites}/>
                   </CardHeader>
                   <CardContent>
                     <DasboardTable columns={columns} data={websites} />

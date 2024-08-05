@@ -86,7 +86,7 @@ export const columns: ColumnDef<Website>[] = [
                       style={{ height: `${normalizedHeight}px`, width: '2px' }}
                     />
                   </TooltipTrigger>
-                  <TooltipContent className='space-y-2'>
+                  <TooltipContent className='space-y-2 text-xs'>
                     {check.status > 200 ? (
                       <div className='flex items-center font-medium justify-start text-sm'>
                         Failed
