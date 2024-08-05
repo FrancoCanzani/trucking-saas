@@ -1,8 +1,17 @@
 import { Website } from '@/lib/types';
 import { deleteWebsite } from '@/lib/actions';
 import { toast } from 'sonner';
+import { cn } from '@/lib/utils';
 
-export default function DeleteWebsiteButton({ website }: { website: Website }) {
+export default function DeleteWebsiteButton({
+  website,
+  className,
+  children,
+}: {
+  website: Website;
+  className?: string;
+  children: React.ReactNode;
+}) {
   async function handleSubmit() {
     try {
       const healthCheckPromise = deleteWebsite(website.id);
@@ -20,7 +29,7 @@ export default function DeleteWebsiteButton({ website }: { website: Website }) {
   }
   return (
     <form action={handleSubmit}>
-      <button className='text-red-600'>Delete website</button>
+      <button className={cn('text-red-600', className)}>{children}</button>
     </form>
   );
 }

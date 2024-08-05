@@ -1,8 +1,17 @@
 import { Website } from '@/lib/types';
 import { createHealthCheck } from '@/lib/actions';
 import { toast } from 'sonner';
+import { cn } from '@/lib/utils';
 
-export default function CheckWebsiteButton({ website }: { website: Website }) {
+export default function CheckWebsiteButton({
+  website,
+  className,
+  children,
+}: {
+  website: Website;
+  className?: string;
+  children: React.ReactNode;
+}) {
   async function handleSubmit() {
     try {
       const healthCheckPromise = createHealthCheck(website);
@@ -20,7 +29,7 @@ export default function CheckWebsiteButton({ website }: { website: Website }) {
   }
   return (
     <form action={handleSubmit}>
-      <button>Check website</button>
+      <button className={cn('', className)}>{children}</button>
     </form>
   );
 }

@@ -3,7 +3,7 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { HealthCheck, Website } from '@/lib/types';
 import { formatDistance } from 'date-fns';
-import WebsiteRowAction from '@/components/check-website-button';
+import CheckWebsiteButton from '@/components/check-website-button';
 import {
   Tooltip,
   TooltipContent,
@@ -198,10 +198,14 @@ export const columns: ColumnDef<Website>[] = [
           <DropdownMenuContent align='end'>
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem>
-              <WebsiteRowAction website={website} />
+              <CheckWebsiteButton website={website}>
+                Check website
+              </CheckWebsiteButton>
             </DropdownMenuItem>
             <DropdownMenuItem>
-              <DeleteWebsiteButton website={website} />
+              <DeleteWebsiteButton website={website}>
+                Delete website
+              </DeleteWebsiteButton>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

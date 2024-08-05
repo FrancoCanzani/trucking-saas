@@ -1,6 +1,7 @@
 import { Website } from '@/lib/types';
 import CheckWebsiteButton from '@/components/check-website-button';
 import { formatDistance } from 'date-fns';
+import DeleteWebsiteButton from './delete-website-button';
 
 export default function DashboardTableMobileView({
   websites,
@@ -58,7 +59,20 @@ export default function DashboardTableMobileView({
             <p className='text-sm text-gray-600'>
               Check Interval: {website.check_interval} days
             </p>
-            <CheckWebsiteButton website={website} />
+            <div className='flex items-center justify-end space-x-2'>
+              <CheckWebsiteButton
+                website={website}
+                className='text-xs hover:underline'
+              >
+                Check
+              </CheckWebsiteButton>
+              <DeleteWebsiteButton
+                website={website}
+                className='text-xs hover:underline'
+              >
+                Delete
+              </DeleteWebsiteButton>
+            </div>
           </div>
         </div>
       ))}
