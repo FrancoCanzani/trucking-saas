@@ -24,6 +24,7 @@ export default function CheckSpeedInsightsButton({
         error: 'Error checking speed insights.',
       });
     } catch (error) {
+      console.error(error);
       toast.error('Error checking speed insights.');
     }
   }
