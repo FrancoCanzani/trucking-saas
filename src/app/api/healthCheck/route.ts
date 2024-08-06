@@ -1,8 +1,11 @@
 import { NextResponse } from 'next/server';
 
+const DEFAULT_TIMEOUT = 10000; 
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const url = searchParams.get('url');
+  const timeout = parseInt(searchParams.get('timeout') ?? DEFAULT_TIMEOUT.toString(), 10);
 
   if (!url || typeof url !== 'string') {
     return NextResponse.json(
@@ -12,71 +15,40 @@ export async function GET(request: Request) {
   }
 
   try {
-    // Measure the start time
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeout);
+
     const start = performance.now();
 
-    // Perform the health check
     const response = await fetch(url, {
       method: 'GET',
       headers: {
-        'User-Agent':
-          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
       },
+      signal: controller.signal,
     });
 
-    // Measure the end time
+    clearTimeout(timeoutId);
+
     const end = performance.now();
-    const responseTime = end - start;
-    const roundedResponseTime = Math.round(responseTime * 100) / 100;
+    const responseTime = Math.round((end - start) * 100) / 100;
 
-    const headers = response.headers;
+    const headers = Object.fromEntries(response.headers.entries());
+    const status = response.status;
 
-    let status = response.status;
-    let message = '';
+    let message = getStatusMessage(status);
     let additionalInfo = {};
 
-    switch (true) {
-      case status >= 200 && status < 300:
-        message = 'OK';
-        break;
-      case status >= 300 && status < 400:
-        message = 'Redirection';
-        additionalInfo = { location: headers.get('location') };
-        break;
-      case status === 400:
-        message = 'Bad Request';
-        break;
-      case status === 401:
-        message = 'Unauthorized';
-        break;
-      case status === 403:
-        message = 'Forbidden';
-        break;
-      case status === 404:
-        message = 'Not Found';
-        break;
-      case status === 500:
-        message = 'Internal Server Error';
-        break;
-      case status === 503:
-        message = 'Service Unavailable';
-        break;
-      default:
-        message = 'Unexpected Status Code';
+    if (status >= 300 && status < 400) {
+      additionalInfo = { location: headers['location'] };
     }
 
     const resData = {
-      status: status,
+      status,
       statusText: response.statusText,
-      message: message,
-      responseTime: roundedResponseTime,
-      headers: {
-        'content-type': headers.get('content-type'),
-        date: headers.get('date'),
-        link: headers.get('link'),
-        server: headers.get('server'),
-        'x-powered-by': headers.get('x-powered-by'),
-      },
+      message,
+      responseTime,
+      headers,
       url: response.url,
       ...additionalInfo,
     };
@@ -85,13 +57,7 @@ export async function GET(request: Request) {
   } catch (error) {
     console.error('Error performing health check:', error);
 
-    let errorMessage = 'Unknown error occurred';
-    let errorStatus = 500;
-
-    if (error instanceof TypeError && error.message === 'Failed to fetch') {
-      errorMessage = 'Network error or CORS issue';
-      errorStatus = 503;
-    }
+    const { errorMessage, errorStatus } = handleError(error);
 
     return NextResponse.json(
       {
@@ -102,4 +68,33 @@ export async function GET(request: Request) {
       { status: errorStatus }
     );
   }
+}
+
+function getStatusMessage(status: number): string {
+  const statusMessages: { [key: number]: string } = {
+    200: 'OK',
+    201: 'Created',
+    204: 'No Content',
+    301: 'Moved Permanently',
+    302: 'Found',
+    304: 'Not Modified',
+    400: 'Bad Request',
+    401: 'Unauthorized',
+    403: 'Forbidden',
+    404: 'Not Found',
+    500: 'Internal Server Error',
+    503: 'Service Unavailable',
+  };
+
+  return statusMessages[status] || 'Unexpected Status Code';
+}
+
+function handleError(error: unknown): { errorMessage: string; errorStatus: number } {
+  if (error instanceof TypeError && error.message === 'Failed to fetch') {
+    return { errorMessage: 'Network error or CORS issue', errorStatus: 503 };
+  }
+  if (error instanceof DOMException && error.name === 'AbortError') {
+    return { errorMessage: 'Request timed out', errorStatus: 504 };
+  }
+  return { errorMessage: 'Unknown error occurred', errorStatus: 500 };
 }

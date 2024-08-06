@@ -24,7 +24,7 @@ export default function DashboardTableMobileView({
                   ? 'bg-red-600'
                   : website.healthChecks.slice(-1)[0] &&
                     website.healthChecks.slice(-1)[0].status <= 200
-                  ? 'bg-green-400'
+                  ? 'bg-green-500'
                   : 'bg-gray-400'
               }`}
             ></div>

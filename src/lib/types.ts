@@ -4,15 +4,20 @@ export interface HealthCheckResponse {
   message: string;
   responseTime: number; // Response time in milliseconds
   headers: {
-    'content-type': string | null;
-    date: string | null;
-    link: string | null;
-    server: string | null;
-    'x-powered-by': string | null;
+    [key: string]: string | null;
   };
   url: string;
   location?: string; // Optional, included if redirection occurred
+  error?: string; // Optional, included if an error occurred
+  browserInfo?: {
+    name: string;
+    version?: string;
+  };
+  performanceMetrics?: {
+    [key: string]: number;
+  };
 }
+
 
 export interface LighthouseResult {
   categories: {

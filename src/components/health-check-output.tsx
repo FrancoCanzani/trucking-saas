@@ -14,12 +14,11 @@ export default function HealthCheckOutput({
       statusText: data.statusText,
       message: data.message,
       url: data.url,
-      server: data.headers.server,
-      'content-type': data.headers['content-type'],
-      date: data.headers.date,
-      link: data.headers.link,
-      'x-powered-by': data.headers['x-powered-by'],
+      responseTime: data.responseTime,
       ...(data.location && { location: data.location }),
+      ...(data.error && { error: data.error }),
+      ...(data.browserInfo && { browserInfo: data.browserInfo }),
+      ...(data.performanceMetrics && { performanceMetrics: data.performanceMetrics }),
     },
     null,
     2
@@ -64,7 +63,6 @@ export default function HealthCheckOutput({
             The site returned a <strong>{data.status}</strong> status.
           </p>
           <p className='italic font-medium'>{httpStatusCodes[data.status]}</p>
-          {data.message && <p className='font-medium'>{data.message}</p>}
           {data.location && (
             <p>
               Redirection location:{' '}
@@ -75,8 +73,14 @@ export default function HealthCheckOutput({
                 className='underline'
               >
                 {data.location}
-              </a>
+                </a>
             </p>
+          )}
+          {data.error && (
+            <p className='text-red-600'>Error: {data.error}</p>
+          )}
+          {data.browserInfo && (
+            <p>Browser: {data.browserInfo.name} {data.browserInfo.version}</p>
           )}
           <div
             className={cn('p-3 rounded-sm font-medium', {
