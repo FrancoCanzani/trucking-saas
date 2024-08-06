@@ -66,13 +66,13 @@ export const columns: ColumnDef<Website>[] = [
   },
   {
     accessorKey: 'url',
-    header: () => <div className='w-[200px] truncate'>URL</div>,
+    header: () => <div className='w-[150px] truncate'>URL</div>,
     cell: ({ row }) => {
       return (
         <a
           href={row.getValue('url')}
           target='_blank'
-          className='font-medium hover:underline w-[200px] lg:w-max truncate flex items-center justify-start gap-x-2'
+          className='font-medium hover:underline w-[150px] lg:w-max truncate flex items-center justify-start gap-x-2'
           title={row.getValue('url')}
         >
           {row.getValue('url')}
@@ -211,7 +211,7 @@ export const columns: ColumnDef<Website>[] = [
       <TooltipProvider>
         <Tooltip>
         <TooltipTrigger asChild>
-        <div className='hidden lg:table-cell underline cursor-pointer'>FCP</div>
+        <div className='hidden md:table-cell underline cursor-pointer'>FCP</div>
           </TooltipTrigger>
           <TooltipContent className='font-medium'>
             First Contentful Paint (FCP) measures how long it takes for the first content to be rendered on the page.
@@ -235,7 +235,7 @@ export const columns: ColumnDef<Website>[] = [
       <TooltipProvider>
         <Tooltip>
         <TooltipTrigger asChild>
-        <div className='hidden lg:table-cell underline cursor-pointer'>TTI</div>
+        <div className='hidden md:table-cell underline cursor-pointer'>TTI</div>
           </TooltipTrigger>
           <TooltipContent className='font-medium'>
             Time to Interactive (TTI) measures how long it takes for the page to become fully interactive.
@@ -259,7 +259,7 @@ export const columns: ColumnDef<Website>[] = [
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
-            <div className='hidden lg:table-cell underline cursor-pointer'>LCP</div>
+            <div className='hidden md:table-cell underline cursor-pointer'>LCP</div>
           </TooltipTrigger>
           <TooltipContent className='font-medium'>
             Largest Contentful Paint (LCP) measures how long it takes for the largest content element on the page to be visible.
@@ -295,7 +295,7 @@ export const columns: ColumnDef<Website>[] = [
       const speedInsights: SpeedInsight[] = row.getValue('speedInsights') || [];
       const cumulativeLayoutShift = speedInsights.length > 0 ? speedInsights[0].labMetrics.cumulativeLayoutShift : 'No data';
       return (
-        <div className='font-medium hidden md:table-cell'>
+        <div className='font-medium hidden lg:table-cell'>
           {cumulativeLayoutShift}
         </div>
       );
@@ -319,7 +319,7 @@ export const columns: ColumnDef<Website>[] = [
       const speedInsights: SpeedInsight[] = row.getValue('speedInsights') || [];
       const totalBlockingTime = speedInsights.length > 0 ? speedInsights[0].labMetrics.totalBlockingTime : 'No data';
       return (
-        <div className='font-medium hidden md:table-cell'>
+        <div className='font-medium hidden lg:table-cell'>
           {totalBlockingTime}
         </div>
       );
@@ -343,7 +343,7 @@ export const columns: ColumnDef<Website>[] = [
       const speedInsights: SpeedInsight[] = row.getValue('speedInsights') || [];
       const speedIndex = speedInsights.length > 0 ? speedInsights[0].labMetrics.speedIndex : 'No data';
       return (
-        <div className='font-medium hidden md:table-cell'>
+        <div className='font-medium hidden lg:table-cell'>
           {speedIndex}
         </div>
       );
@@ -352,7 +352,7 @@ export const columns: ColumnDef<Website>[] = [
   {
     accessorKey: 'created_at',
     header: () => (
-      <div className='hidden lg:table-cell'>Created</div>
+      <div className='hidden xl:table-cell'>Created</div>
     ),
     cell: ({ row }) => {
       const createdAt = new Date(row.getValue('created_at'));
@@ -361,7 +361,7 @@ export const columns: ColumnDef<Website>[] = [
       });
 
       return (
-        <div className='font-medium capitalize hidden md:table-cell'>
+        <div className='font-medium capitalize hidden xl:table-cell'>
           {distance}
         </div>
       );
