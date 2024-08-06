@@ -4,7 +4,6 @@ import { PageSpeedData, FormattedPageSpeedData } from '@/lib/types';
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const url = searchParams.get('url');
-  const strategy = searchParams.get('strategy') || 'both'; // 'both' to handle both mobile and desktop
 
   if (!url) {
     return NextResponse.json(
@@ -66,25 +65,15 @@ export async function GET(request: NextRequest) {
     };
   }
 
-  // Type guard to check if an error is an instance of Error
   function isError(error: unknown): error is Error {
     return error instanceof Error;
   }
 
   try {
-    const results: { [key: string]: FormattedPageSpeedData } = {};
+    const desktopData = await getPageSpeedInfo(url, 'desktop');
+    const formattedDesktopData = formatPageSpeedData(desktopData, 'desktop');
 
-    if (strategy === 'both' || strategy === 'desktop') {
-      const desktopData = await getPageSpeedInfo(url, 'desktop');
-      results.desktop = formatPageSpeedData(desktopData, 'desktop');
-    }
-
-    if (strategy === 'both' || strategy === 'mobile') {
-      const mobileData = await getPageSpeedInfo(url, 'mobile');
-      results.mobile = formatPageSpeedData(mobileData, 'mobile');
-    }
-
-    return NextResponse.json(results, { status: 200 });
+    return NextResponse.json({ desktop: formattedDesktopData }, { status: 200 });
   } catch (error) {
     console.error('Error fetching PageSpeed Insights:', error);
 

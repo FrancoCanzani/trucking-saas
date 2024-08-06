@@ -14,7 +14,7 @@ export default function CheckSpeedInsightsButton({
 }) {
   async function handleSubmit() {
     try {
-      const healthCheckPromise = createPageSpeedInsights(website, "both");
+      const healthCheckPromise = createPageSpeedInsights(website);
 
       toast.promise(healthCheckPromise, {
         loading: 'Checking speed insights...',

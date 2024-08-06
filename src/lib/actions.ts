@@ -4,7 +4,7 @@ import { currentUser } from '@clerk/nextjs/server';
 import { sql } from '@vercel/postgres';
 import { revalidatePath } from 'next/cache';
 import { HealthCheckResponse, Website } from './types';
-import { PageSpeedInsightsResponse } from './types'; 
+import { FormattedPageSpeedData } from './types'; 
 
 export async function createWebsiteToCheck(formData: FormData) {
   const user = await currentUser();
@@ -86,7 +86,7 @@ export async function deleteWebsite(websiteId: number) {
   }
 }
 
-export async function createPageSpeedInsights(website: Website, strategy: 'desktop' | 'mobile' | 'both') {
+export async function createPageSpeedInsights(website: Website) {
   const user = await currentUser();
   const url = website.url;
 
@@ -96,46 +96,30 @@ export async function createPageSpeedInsights(website: Website, strategy: 'deskt
 
   try {
     const response = await fetch(
-      `${process.env.URL}/api/speedInsight?url=${encodeURIComponent(url)}&strategy=${strategy}`
+      `${process.env.URL}/api/speedInsight?url=${encodeURIComponent(url)}&strategy=desktop`
     );
-    const data: PageSpeedInsightsResponse = await response.json();
+    const data: { desktop: FormattedPageSpeedData } = await response.json();
 
-    // Type guard to ensure valid device type
-    const isValidDeviceType = (key: string): key is 'desktop' | 'mobile' => 
-      key === 'desktop' || key === 'mobile';
+    const insights = data.desktop;
 
-    const insertPromises = [];
-
-    const deviceTypes = strategy === 'both' ? ['desktop', 'mobile'] : [strategy];
-
-    for (const deviceType of deviceTypes) {
-      if (isValidDeviceType(deviceType)) {
-        const insights = data[deviceType];
-        
-        insertPromises.push(
-          sql`
-            INSERT INTO speed_insights (
-              website_id, device, performance_score, first_contentful_paint,
-              largest_contentful_paint, cumulative_layout_shift, interactive,
-              total_blocking_time, speed_index, checked_at
-            ) VALUES (
-              ${website.id},
-              ${deviceType},
-              ${insights.performanceScore},
-              ${insights.labMetrics.firstContentfulPaint},
-              ${insights.labMetrics.largestContentfulPaint},
-              ${insights.labMetrics.cumulativeLayoutShift},
-              ${insights.labMetrics.interactive},
-              ${insights.labMetrics.totalBlockingTime},
-              ${insights.labMetrics.speedIndex},
-              ${new Date(insights.timestamp).toISOString()}
-            );
-          `
-        );
-      }
-    }
-
-    await Promise.all(insertPromises);
+    await sql`
+      INSERT INTO speed_insights (
+        website_id, device, performance_score, first_contentful_paint,
+        largest_contentful_paint, cumulative_layout_shift, interactive,
+        total_blocking_time, speed_index, checked_at
+      ) VALUES (
+        ${website.id},
+        'desktop',
+        ${insights.performanceScore},
+        ${insights.labMetrics.firstContentfulPaint},
+        ${insights.labMetrics.largestContentfulPaint},
+        ${insights.labMetrics.cumulativeLayoutShift},
+        ${insights.labMetrics.interactive},
+        ${insights.labMetrics.totalBlockingTime},
+        ${insights.labMetrics.speedIndex},
+        ${new Date(insights.timestamp).toISOString()}
+      );
+    `;
 
     revalidatePath('/dashboard'); 
   } catch (error) {
