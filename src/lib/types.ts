@@ -69,6 +69,21 @@ export interface HealthCheck {
   checked_at: string;
 }
 
+export interface SpeedInsight {
+  id: number;
+  device: 'desktop' | 'mobile';
+  performanceScore: number;
+  labMetrics: {
+    firstContentfulPaint: number;
+    largestContentfulPaint: number;
+    cumulativeLayoutShift: number;
+    interactive: number;
+    totalBlockingTime: number;
+    speedIndex: number;
+  };
+  checkedAt: string;
+}
+
 export interface Website {
   id: number;
   user_id: string;
@@ -78,4 +93,5 @@ export interface Website {
   created_at: string;
   updated_at: string;
   healthChecks: HealthCheck[];
+  speedInsights: SpeedInsight[]; 
 }

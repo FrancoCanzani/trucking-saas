@@ -3,10 +3,9 @@ import { sql } from '@vercel/postgres';
 import { auth } from '@clerk/nextjs/server';
 import { Website } from '@/lib/types';
 
-export const maxDuration = 60
+export const maxDuration = 60;
 
 export default async function Websites() {
-  
   const { userId } = await auth();
 
   const { rows } = await sql`
@@ -21,23 +20,39 @@ export default async function Websites() {
       hc.id AS health_check_id,
       hc.status,
       hc.response_time,
-      hc.checked_at
+      hc.checked_at AS health_check_checked_at,
+      si.id AS speed_insight_id,
+      si.device,
+      si.performance_score,
+      si.first_contentful_paint,
+      si.largest_contentful_paint,
+      si.cumulative_layout_shift,
+      si.interactive,
+      si.total_blocking_time,
+      si.speed_index,
+      si.checked_at AS speed_insight_checked_at
     FROM 
       websites w
     LEFT JOIN 
-      health_checks hc
-    ON 
-      w.id = hc.website_id
+      health_checks hc ON w.id = hc.website_id
+    LEFT JOIN
+      speed_insights si ON w.id = si.website_id
+      AND si.checked_at = (
+        SELECT MAX(checked_at) 
+        FROM speed_insights 
+        WHERE website_id = w.id
+      )
     WHERE 
       w.user_id = ${userId}
     ORDER BY 
-      w.created_at ASC
+      w.created_at ASC, hc.checked_at ASC
   `;
 
   const websites: Website[] = [];
 
   rows.forEach((row) => {
     const existingWebsite = websites.find((w) => w.id === row.website_id);
+    
     if (!existingWebsite) {
       websites.push({
         id: row.website_id,
@@ -53,20 +68,61 @@ export default async function Websites() {
                 id: row.health_check_id,
                 status: row.status,
                 response_time: row.response_time,
-                checked_at: row.checked_at,
+                checked_at: row.health_check_checked_at,
+              },
+            ]
+          : [],
+        speedInsights: row.speed_insight_id
+          ? [
+              {
+                id: row.speed_insight_id,
+                device: row.device,
+                performanceScore: row.performance_score,
+                labMetrics: {
+                  firstContentfulPaint: row.first_contentful_paint,
+                  largestContentfulPaint: row.largest_contentful_paint,
+                  cumulativeLayoutShift: row.cumulative_layout_shift,
+                  interactive: row.interactive,
+                  totalBlockingTime: row.total_blocking_time,
+                  speedIndex: row.speed_index,
+                },
+                checkedAt: row.speed_insight_checked_at,
               },
             ]
           : [],
       });
-    } else if (row.health_check_id) {
-      existingWebsite.healthChecks.push({
-        id: row.health_check_id,
-        status: row.status,
-        response_time: row.response_time,
-        checked_at: row.checked_at,
-      });
+    } else {
+      if (row.health_check_id) {
+        existingWebsite.healthChecks.push({
+          id: row.health_check_id,
+          status: row.status,
+          response_time: row.response_time,
+          checked_at: row.health_check_checked_at,
+        });
+      }
+      
+      if (row.speed_insight_id) {
+        existingWebsite.speedInsights = [
+          {
+            id: row.speed_insight_id,
+            device: row.device,
+            performanceScore: row.performance_score,
+            labMetrics: {
+              firstContentfulPaint: row.first_contentful_paint,
+              largestContentfulPaint: row.largest_contentful_paint,
+              cumulativeLayoutShift: row.cumulative_layout_shift,
+              interactive: row.interactive,
+              totalBlockingTime: row.total_blocking_time,
+              speedIndex: row.speed_index,
+            },
+            checkedAt: row.speed_insight_checked_at,
+          },
+        ];
+      }
     }
   });
 
+  console.log(websites[0].speedInsights);
+  
   return <Dashboard websites={websites} />;
 }

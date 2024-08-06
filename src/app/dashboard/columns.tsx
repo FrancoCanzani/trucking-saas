@@ -1,7 +1,7 @@
 'use client';
 
 import { ColumnDef } from '@tanstack/react-table';
-import { HealthCheck, Website } from '@/lib/types';
+import { HealthCheck, SpeedInsight, Website } from '@/lib/types';
 import { formatDistance } from 'date-fns';
 import CheckWebsiteButton from '@/components/check-website-button';
 import {
@@ -42,13 +42,15 @@ export const columns: ColumnDef<Website>[] = [
                     ? 'bg-green-500'
                     : 'bg-gray-400'
                 }`}
-              >{
-                lastCheck && lastCheck.status > 200
-                    ? <svg width="1rem" height="1rem" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.877075 7.49988C0.877075 3.84219 3.84222 0.877045 7.49991 0.877045C11.1576 0.877045 14.1227 3.84219 14.1227 7.49988C14.1227 11.1575 11.1576 14.1227 7.49991 14.1227C3.84222 14.1227 0.877075 11.1575 0.877075 7.49988ZM7.49991 1.82704C4.36689 1.82704 1.82708 4.36686 1.82708 7.49988C1.82708 10.6329 4.36689 13.1727 7.49991 13.1727C10.6329 13.1727 13.1727 10.6329 13.1727 7.49988C13.1727 4.36686 10.6329 1.82704 7.49991 1.82704ZM9.85358 5.14644C10.0488 5.3417 10.0488 5.65829 9.85358 5.85355L8.20713 7.49999L9.85358 9.14644C10.0488 9.3417 10.0488 9.65829 9.85358 9.85355C9.65832 10.0488 9.34173 10.0488 9.14647 9.85355L7.50002 8.2071L5.85358 9.85355C5.65832 10.0488 5.34173 10.0488 5.14647 9.85355C4.95121 9.65829 4.95121 9.3417 5.14647 9.14644L6.79292 7.49999L5.14647 5.85355C4.95121 5.65829 4.95121 5.3417 5.14647 5.14644C5.34173 4.95118 5.65832 4.95118 5.85358 5.14644L7.50002 6.79289L9.14647 5.14644C9.34173 4.95118 9.65832 4.95118 9.85358 5.14644Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
+              >
+                {
+                  lastCheck && lastCheck.status > 200
+                    ? <svg width="1rem" height="1rem" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.877075 7.49988C0.877075 3.84219 3.84222 0.877045 7.49991 0.877045C11.1576 0.877045 14.1227 3.84219 14.1227 7.49988C14.1227 11.1575 11.1576 14.1227 7.49991 14.1227C3.84222 14.1227 0.877075 11.1575 0.877075 7.49988ZM7.49991 1.82704C4.36689 1.82704 1.82708 4.36686 1.82708 7.49988C1.82708 10.6329 4.36689 13.1727 7.49991 13.1727C10.6329 13.1727 13.1727 10.6329 13.1727 7.49988C13.1727 4.36686 10.6329 1.82704 7.49991 1.82704ZM9.85358 5.14644C10.0488 5.3417 10.0488 5.65829 9.85358 5.85355L8.20713 7.49999L9.85358 9.14644C10.0488 9.3417 10.0488 9.65829 9.85358 9.85355C9.65832 10.0488 9.34173 10.0488 9.14647 9.85355L7.50002 8.2071L5.85358 9.85355C5.65832 10.0488 5.34173 10.0488 5.14647 9.85355C4.95121 9.65829 4.95121 9.3417 5.14647 9.14644L6.79292 7.49999L5.14647 5.85355C4.95121 5.65829 4.95121 5.3417 5.14647 5.14644C5.34173 4.95118 5.65832 4.95118 5.85358 5.14644L7.50002 6.79289L9.14647 5.14644C9.34173 4.95118 9.65832 4.95118 9.85358 5.14644Z" fill="currentColor" fillRule="evenodd" clipRule="evenodd"></path></svg>
                     : lastCheck && lastCheck.status <= 200
-                    ? <svg width="1rem" height="1rem" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.49991 0.877045C3.84222 0.877045 0.877075 3.84219 0.877075 7.49988C0.877075 11.1575 3.84222 14.1227 7.49991 14.1227C11.1576 14.1227 14.1227 11.1575 14.1227 7.49988C14.1227 3.84219 11.1576 0.877045 7.49991 0.877045ZM1.82708 7.49988C1.82708 4.36686 4.36689 1.82704 7.49991 1.82704C10.6329 1.82704 13.1727 4.36686 13.1727 7.49988C13.1727 10.6329 10.6329 13.1727 7.49991 13.1727C4.36689 13.1727 1.82708 10.6329 1.82708 7.49988ZM10.1589 5.53774C10.3178 5.31191 10.2636 5.00001 10.0378 4.84109C9.81194 4.68217 9.50004 4.73642 9.34112 4.96225L6.51977 8.97154L5.35681 7.78706C5.16334 7.59002 4.84677 7.58711 4.64973 7.78058C4.45268 7.97404 4.44978 8.29061 4.64325 8.48765L6.22658 10.1003C6.33054 10.2062 6.47617 10.2604 6.62407 10.2483C6.77197 10.2363 6.90686 10.1591 6.99226 10.0377L10.1589 5.53774Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
-                    : '<svg width="1rem" height="1rem" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.49991 0.876892C3.84222 0.876892 0.877075 3.84204 0.877075 7.49972C0.877075 11.1574 3.84222 14.1226 7.49991 14.1226C11.1576 14.1226 14.1227 11.1574 14.1227 7.49972C14.1227 3.84204 11.1576 0.876892 7.49991 0.876892ZM1.82707 7.49972C1.82707 4.36671 4.36689 1.82689 7.49991 1.82689C10.6329 1.82689 13.1727 4.36671 13.1727 7.49972C13.1727 10.6327 10.6329 13.1726 7.49991 13.1726C4.36689 13.1726 1.82707 10.6327 1.82707 7.49972ZM4.50003 7C4.22389 7 4.00003 7.22386 4.00003 7.5C4.00003 7.77614 4.22389 8 4.50003 8H10.5C10.7762 8 11 7.77614 11 7.5C11 7.22386 10.7762 7 10.5 7H4.50003Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path></svg>'
-              }</div>
+                    ? <svg width="1rem" height="1rem" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.49991 0.877045C3.84222 0.877045 0.877075 3.84219 0.877075 7.49988C0.877075 11.1575 3.84222 14.1227 7.49991 14.1227C11.1576 14.1227 14.1227 11.1575 14.1227 7.49988C14.1227 3.84219 11.1576 0.877045 7.49991 0.877045ZM1.82708 7.49988C1.82708 4.36686 4.36689 1.82704 7.49991 1.82704C10.6329 1.82704 13.1727 4.36686 13.1727 7.49988C13.1727 10.6329 10.6329 13.1727 7.49991 13.1727C4.36689 13.1727 1.82708 10.6329 1.82708 7.49988ZM10.1589 5.53774C10.3178 5.31191 10.2636 5.00001 10.0378 4.84109C9.81194 4.68217 9.50004 4.73642 9.34112 4.96225L6.51977 8.97154L5.35681 7.78706C5.16334 7.59002 4.84677 7.58711 4.64973 7.78058C4.45268 7.97404 4.44978 8.29061 4.64325 8.48765L6.22658 10.1003C6.33054 10.2062 6.47617 10.2604 6.62407 10.2483C6.77197 10.2363 6.90686 10.1591 6.99226 10.0377L10.1589 5.53774Z" fill="currentColor" fillRule="evenodd" clipRule="evenodd"></path></svg>
+                    : '<svg width="1rem" height="1rem" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.49991 0.876892C3.84222 0.876892 0.877075 3.84204 0.877075 7.49972C0.877075 11.1574 3.84222 14.1226 7.49991 14.1226C11.1576 14.1226 14.1227 11.1574 14.1227 7.49972C14.1227 3.84204 11.1576 0.876892 7.49991 0.876892ZM1.82707 7.49972C1.82707 4.36671 4.36689 1.82689 7.49991 1.82689C10.6329 1.82689 13.1727 4.36671 13.1727 7.49972C13.1727 10.6327 10.6329 13.1726 7.49991 13.1726C4.36689 13.1726 1.82707 10.6327 1.82707 7.49972ZM4.50003 7C4.22389 7 4.00003 7.22386 4.00003 7.5C4.00003 7.77614 4.22389 8 4.50003 8H10.5C10.7762 8 11 7.77614 11 7.5C11 7.22386 10.7762 7 10.5 7H4.50003Z" fill="currentColor" fillRule="evenodd" clipRule="evenodd"></path></svg>'
+                }
+              </div>
             </TooltipTrigger>
             <TooltipContent className='font-medium'>
               {lastCheck
@@ -68,8 +70,8 @@ export const columns: ColumnDef<Website>[] = [
     cell: ({ row }) => {
       return (
         <a
-        href={row.getValue('url')}
-        target='_blank'
+          href={row.getValue('url')}
+          target='_blank'
           className='font-medium hover:underline w-[200px] lg:w-max truncate flex items-center justify-start gap-x-2'
           title={row.getValue('url')}
         >
@@ -80,7 +82,7 @@ export const columns: ColumnDef<Website>[] = [
   },
   {
     accessorKey: 'healthChecks',
-    header: () => <div className='w-max'>Last Checks</div>,
+    header: () => <div className='w-max'>Latest Checks</div>,
     cell: ({ row }) => {
       const healthChecks: HealthCheck[] = row.getValue('healthChecks');
       const slicedHealthChecks = healthChecks.slice(-24);
@@ -180,18 +182,173 @@ export const columns: ColumnDef<Website>[] = [
     },
   },
   {
-    accessorKey: 'notify_email',
+    accessorKey: 'speedInsights',
     header: () => (
-      <div className='hidden md:table-cell'>Alert Email</div>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div className='hidden md:table-cell underline cursor-pointer'>Performance</div>
+          </TooltipTrigger>
+          <TooltipContent className='font-medium'>
+            The performance score from Lighthouse, indicating overall page performance.
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
     ),
     cell: ({ row }) => {
+      const speedInsights: SpeedInsight[] = row.getValue('speedInsights') || [];
+      const performanceScore = speedInsights.length > 0 ? speedInsights[0].performanceScore : 'No data';
       return (
         <div className='font-medium hidden md:table-cell'>
-          {row.getValue('notify_email')}
+          {performanceScore}
         </div>
       );
     },
   },
+  {
+    accessorKey: 'speedInsights',
+    header: () => (
+      <TooltipProvider>
+        <Tooltip>
+        <TooltipTrigger asChild>
+        <div className='hidden md:table-cell underline cursor-pointer'>FCP</div>
+          </TooltipTrigger>
+          <TooltipContent className='font-medium'>
+            First Contentful Paint (FCP) measures how long it takes for the first content to be rendered on the page.
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    ),
+    cell: ({ row }) => {
+      const speedInsights: SpeedInsight[] = row.getValue('speedInsights') || [];
+      const firstContentfulPaint = speedInsights.length > 0 ? speedInsights[0].labMetrics.firstContentfulPaint : 'No data';
+      return (
+        <div className='font-medium hidden md:table-cell'>
+          {firstContentfulPaint}
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: 'speedInsights',
+    header: () => (
+      <TooltipProvider>
+        <Tooltip>
+        <TooltipTrigger asChild>
+        <div className='hidden md:table-cell underline cursor-pointer'>TTI</div>
+          </TooltipTrigger>
+          <TooltipContent className='font-medium'>
+            Time to Interactive (TTI) measures how long it takes for the page to become fully interactive.
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    ),
+    cell: ({ row }) => {
+      const speedInsights: SpeedInsight[] = row.getValue('speedInsights') || [];
+      const interactive = speedInsights.length > 0 ? speedInsights[0].labMetrics.interactive : 'No data';
+      return (
+        <div className='font-medium hidden md:table-cell'>
+          {interactive}
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: 'speedInsights',
+    header: () => (
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div className='hidden md:table-cell underline cursor-pointer'>LCP</div>
+          </TooltipTrigger>
+          <TooltipContent className='font-medium'>
+            Largest Contentful Paint (LCP) measures how long it takes for the largest content element on the page to be visible.
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    ),
+    cell: ({ row }) => {
+      const speedInsights: SpeedInsight[] = row.getValue('speedInsights') || [];
+      const largestContentfulPaint = speedInsights.length > 0 ? speedInsights[0].labMetrics.largestContentfulPaint : 'No data';
+      return (
+        <div className='font-medium hidden md:table-cell'>
+          {largestContentfulPaint}
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: 'speedInsights',
+    header: () => (
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div className='hidden md:table-cell underline cursor-pointer'>CLS</div>
+          </TooltipTrigger>
+          <TooltipContent className='font-medium'>
+            Cumulative Layout Shift (CLS) measures the total amount of unexpected layout shift on the page during its lifespan.
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    ),
+    cell: ({ row }) => {
+      const speedInsights: SpeedInsight[] = row.getValue('speedInsights') || [];
+      const cumulativeLayoutShift = speedInsights.length > 0 ? speedInsights[0].labMetrics.cumulativeLayoutShift : 'No data';
+      return (
+        <div className='font-medium hidden md:table-cell'>
+          {cumulativeLayoutShift}
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: 'speedInsights',
+    header: () => (
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div className='hidden md:table-cell underline cursor-pointer'>TBT</div>
+          </TooltipTrigger>
+          <TooltipContent className='font-medium'>
+            Total Blocking Time (TBT) measures the total amount of time during which the page is blocked from responding to user input.
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    ),
+    cell: ({ row }) => {
+      const speedInsights: SpeedInsight[] = row.getValue('speedInsights') || [];
+      const totalBlockingTime = speedInsights.length > 0 ? speedInsights[0].labMetrics.totalBlockingTime : 'No data';
+      return (
+        <div className='font-medium hidden md:table-cell'>
+          {totalBlockingTime}
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: 'speedInsights',
+    header: () => (
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div className='hidden md:table-cell underline cursor-pointer'>SI</div>
+          </TooltipTrigger>
+          <TooltipContent className='font-medium'>
+            Speed Index (SI) measures how quickly the contents of a page are visibly populated.
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    ),
+    cell: ({ row }) => {
+      const speedInsights: SpeedInsight[] = row.getValue('speedInsights') || [];
+      const speedIndex = speedInsights.length > 0 ? speedInsights[0].labMetrics.speedIndex : 'No data';
+      return (
+        <div className='font-medium hidden md:table-cell'>
+          {speedIndex}
+        </div>
+      );
+    },
+  },  
   {
     accessorKey: 'created_at',
     header: () => (
