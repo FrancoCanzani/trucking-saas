@@ -3,6 +3,8 @@ import { sql } from '@vercel/postgres';
 import { auth } from '@clerk/nextjs/server';
 import { Website } from '@/lib/types';
 
+export const maxDuration = 60
+
 export default async function Websites() {
   
   const { userId } = await auth();
