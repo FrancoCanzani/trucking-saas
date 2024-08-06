@@ -96,7 +96,7 @@ export async function createPageSpeedInsights(website: Website) {
 
   try {
     const response = await fetch(
-      `${process.env.URL}/api/speedInsight?url=${encodeURIComponent(url)}&strategy=desktop`
+      `${process.env.URL}/api/speedInsights?url=${encodeURIComponent(url)}&strategy=desktop`
     );
     const data: { desktop: FormattedPageSpeedData } = await response.json();
 
