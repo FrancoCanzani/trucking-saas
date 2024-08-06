@@ -100,6 +100,7 @@ export async function createPageSpeedInsights(website: Website) {
     );
     const data: { desktop: FormattedPageSpeedData } = await response.json();
 
+    console.log(data)
     const insights = data.desktop;
 
     await sql`
