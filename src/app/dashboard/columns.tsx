@@ -21,6 +21,8 @@ import {
 import { Ellipsis } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import DeleteWebsiteButton from '@/components/delete-website-button';
+import { cn } from '@/lib/utils';
+import CheckSpeedInsightsButton from '@/components/check-speed-insights-button';
 
 export const columns: ColumnDef<Website>[] = [
   {
@@ -68,7 +70,7 @@ export const columns: ColumnDef<Website>[] = [
         <a
         href={row.getValue('url')}
         target='_blank'
-          className='font-medium w-[200px] lg:w-max truncate flex items-center justify-start gap-x-2'
+          className='font-medium hover:underline w-[200px] lg:w-max truncate flex items-center justify-start gap-x-2'
           title={row.getValue('url')}
         >
           {row.getValue('url')}
@@ -148,14 +150,31 @@ export const columns: ColumnDef<Website>[] = [
     },
   },
   {
-    accessorKey: 'check_interval',
-    header: () => (
-      <div className='hidden md:table-cell'>Check Interval</div>
-    ),
+    id: 'uptime',
+    header: () => <div className='w-max'>Uptime</div>,
     cell: ({ row }) => {
+      const healthChecks: HealthCheck[] = row.getValue('healthChecks');
+
+      if (healthChecks.length === 0) {
+        return <div className='text-sm text-gray-500'>No data</div>;
+      }
+
+      const totalChecks = healthChecks.length;
+      const successfulChecks = healthChecks.filter(
+        (check) => check.status <= 200
+      ).length;
+
+      const uptimePercentage = (successfulChecks / totalChecks) * 100;
+
+      const colorClass = uptimePercentage >= 90
+        ? 'text-green-500' 
+        : uptimePercentage >= 70
+        ? 'text-yellow-500' 
+        : 'text-red-500';  
+
       return (
-        <div className='font-medium hidden md:table-cell'>
-          {`${row.getValue('check_interval')} days`}
+        <div className={cn('font-medium text-black font-bold', colorClass)}>
+          {uptimePercentage.toFixed()}%
         </div>
       );
     },
@@ -209,6 +228,11 @@ export const columns: ColumnDef<Website>[] = [
               <CheckWebsiteButton website={website}>
                 Check website
               </CheckWebsiteButton>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <CheckSpeedInsightsButton website={website}>
+                Check speed insights
+              </CheckSpeedInsightsButton>
             </DropdownMenuItem>
             <DropdownMenuItem>
               <DeleteWebsiteButton website={website}>

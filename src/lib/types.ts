@@ -18,6 +18,12 @@ export interface HealthCheckResponse {
   };
 }
 
+// Adjusting and consolidating interfaces
+export interface PageSpeedData {
+  id: string;
+  analysisUTCTimestamp: string;
+  lighthouseResult: LighthouseResult;
+}
 
 export interface LighthouseResult {
   categories: {
@@ -36,12 +42,6 @@ export interface LighthouseResult {
   };
 }
 
-export interface PageSpeedData {
-  id: string;
-  analysisUTCTimestamp: string;
-  lighthouseResult: LighthouseResult;
-}
-
 export interface FormattedPageSpeedData {
   timestamp: string;
   device: string;
@@ -55,6 +55,12 @@ export interface FormattedPageSpeedData {
     speedIndex: number;
   };
 }
+
+export interface PageSpeedInsightsResponse {
+  desktop: FormattedPageSpeedData;
+  mobile: FormattedPageSpeedData;
+}
+
 
 export interface HealthCheck {
   id: number;

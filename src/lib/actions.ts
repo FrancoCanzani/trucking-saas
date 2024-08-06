@@ -4,6 +4,7 @@ import { currentUser } from '@clerk/nextjs/server';
 import { sql } from '@vercel/postgres';
 import { revalidatePath } from 'next/cache';
 import { HealthCheckResponse, Website } from './types';
+import { PageSpeedInsightsResponse } from './types'; 
 
 export async function createWebsiteToCheck(formData: FormData) {
   const user = await currentUser();
@@ -82,5 +83,63 @@ export async function deleteWebsite(websiteId: number) {
   } catch (error) {
     console.error('Error deleting website:', error);
     throw new Error('Failed to delete website');
+  }
+}
+
+export async function createPageSpeedInsights(website: Website, strategy: 'desktop' | 'mobile' | 'both') {
+  const user = await currentUser();
+  const url = website.url;
+
+  if (!user) {
+    throw new Error('User is not authenticated');
+  }
+
+  try {
+    const response = await fetch(
+      `${process.env.URL}/api/speedInsight?url=${encodeURIComponent(url)}&strategy=${strategy}`
+    );
+    const data: PageSpeedInsightsResponse = await response.json();
+
+    // Type guard to ensure valid device type
+    const isValidDeviceType = (key: string): key is 'desktop' | 'mobile' => 
+      key === 'desktop' || key === 'mobile';
+
+    const insertPromises = [];
+
+    const deviceTypes = strategy === 'both' ? ['desktop', 'mobile'] : [strategy];
+
+    for (const deviceType of deviceTypes) {
+      if (isValidDeviceType(deviceType)) {
+        const insights = data[deviceType];
+        
+        insertPromises.push(
+          sql`
+            INSERT INTO speed_insights (
+              website_id, device, performance_score, first_contentful_paint,
+              largest_contentful_paint, cumulative_layout_shift, interactive,
+              total_blocking_time, speed_index, checked_at
+            ) VALUES (
+              ${website.id},
+              ${deviceType},
+              ${insights.performanceScore},
+              ${insights.labMetrics.firstContentfulPaint},
+              ${insights.labMetrics.largestContentfulPaint},
+              ${insights.labMetrics.cumulativeLayoutShift},
+              ${insights.labMetrics.interactive},
+              ${insights.labMetrics.totalBlockingTime},
+              ${insights.labMetrics.speedIndex},
+              ${new Date(insights.timestamp).toISOString()}
+            );
+          `
+        );
+      }
+    }
+
+    await Promise.all(insertPromises);
+
+    revalidatePath('/dashboard'); 
+  } catch (error) {
+    console.error('Error fetching PageSpeed Insights or inserting data:', error);
+    throw new Error('Failed to create PageSpeed Insights');
   }
 }
