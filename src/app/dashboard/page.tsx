@@ -3,7 +3,10 @@ import { sql } from '@vercel/postgres';
 import { auth } from '@clerk/nextjs/server';
 import { Website } from '@/lib/types';
 
+export const maxDuration = 300
+
 export default async function Websites() {
+  
   const { userId } = await auth();
 
   const { rows } = await sql`
