@@ -26,6 +26,8 @@ import CheckSpeedInsightsButton from '@/components/check-speed-insights-button';
 
 const getPerformanceColor = (value: number, metric: string): string => {
   switch (metric) {
+    case 'Performance':
+      return value >= 85 ? 'text-green-500' : value >= 65 ? 'text-yellow-500' : 'text-red-500';
     case 'FCP':
       return value <= 1800 ? 'text-green-500' : value <= 3000 ? 'text-yellow-500' : 'text-red-500';
     case 'TTI':
@@ -218,8 +220,9 @@ export const columns: ColumnDef<Website>[] = [
     cell: ({ row }) => {
       const speedInsights: SpeedInsight[] = row.getValue('speedInsights') || [];
       const performanceScore = speedInsights.length > 0 ? speedInsights[0].performanceScore : 'No data';
+      const colorClass = typeof performanceScore === 'number' ? getPerformanceColor(performanceScore, 'Performance') : '';
       return (
-        <div className={cn('font-medium hidden md:table-cell', speedInsights.length == 0 && 'text-gray-500')}>
+        <div className={cn('font-medium hidden md:table-cell', speedInsights.length == 0 ? 'text-gray-500' : colorClass)}>
           {performanceScore}
         </div>
       );
