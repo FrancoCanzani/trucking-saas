@@ -11,9 +11,6 @@ import {
 } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
   TooltipProvider,
 } from '@/components/ui/tooltip';
 import CreateCheckForm from '@/components/create-check-form';
