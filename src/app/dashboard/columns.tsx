@@ -207,7 +207,7 @@ export const columns: ColumnDef<Website>[] = [
     header: () => (
         <Tooltip>
           <TooltipTrigger asChild>
-            <div className='hidden md:table-cell underline cursor-pointer'>Perf.</div>
+            <div className='hidden md:table-cell wavy cursor-pointer'>Perf.</div>
           </TooltipTrigger>
           <TooltipContent className='font-medium'>
             The performance score from Lighthouse, indicating overall page performance.
@@ -230,7 +230,7 @@ export const columns: ColumnDef<Website>[] = [
     header: () => (
         <Tooltip>
           <TooltipTrigger asChild>
-            <div className='hidden md:table-cell underline cursor-pointer'>FCP</div>
+            <div className='hidden md:table-cell wavy cursor-pointer'>FCP</div>
           </TooltipTrigger>
           <TooltipContent className='font-medium'>
             First Contentful Paint (FCP) measures how long it takes for the first content to be rendered on the page.
@@ -253,7 +253,7 @@ export const columns: ColumnDef<Website>[] = [
     header: () => (
         <Tooltip>
         <TooltipTrigger asChild>
-        <div className='hidden md:table-cell underline cursor-pointer'>TTI</div>
+        <div className='hidden md:table-cell wavy cursor-pointer'>TTI</div>
           </TooltipTrigger>
           <TooltipContent className='font-medium'>
             Time to Interactive (TTI) measures how long it takes for the page to become fully interactive.
@@ -276,7 +276,7 @@ export const columns: ColumnDef<Website>[] = [
     header: () => (
         <Tooltip>
           <TooltipTrigger asChild>
-            <div className='hidden md:table-cell underline cursor-pointer'>LCP</div>
+            <div className='hidden md:table-cell wavy cursor-pointer'>LCP</div>
           </TooltipTrigger>
           <TooltipContent className='font-medium'>
             Largest Contentful Paint (LCP) measures how long it takes for the largest content element on the page to be visible.
@@ -299,7 +299,7 @@ export const columns: ColumnDef<Website>[] = [
     header: () => (
         <Tooltip>
           <TooltipTrigger asChild>
-            <div className='hidden lg:table-cell underline cursor-pointer'>CLS</div>
+            <div className='hidden lg:table-cell wavy cursor-pointer'>CLS</div>
           </TooltipTrigger>
           <TooltipContent className='font-medium'>
             Cumulative Layout Shift (CLS) measures the total amount of unexpected layout shift on the page during its lifespan.
@@ -323,7 +323,7 @@ export const columns: ColumnDef<Website>[] = [
     header: () => (
         <Tooltip>
           <TooltipTrigger asChild>
-            <div className='hidden lg:table-cell underline cursor-pointer'>TBT</div>
+            <div className='hidden lg:table-cell wavy cursor-pointer'>TBT</div>
           </TooltipTrigger>
           <TooltipContent className='font-medium'>
             Total Blocking Time (TBT) measures the total amount of time during which the page is blocked from responding to user input.
@@ -346,7 +346,7 @@ export const columns: ColumnDef<Website>[] = [
     header: () => (
         <Tooltip>
           <TooltipTrigger asChild>
-            <div className='hidden lg:table-cell underline cursor-pointer'>SI</div>
+            <div className='hidden lg:table-cell wavy cursor-pointer'>SI</div>
           </TooltipTrigger>
           <TooltipContent className='font-medium'>
             Speed Index (SI) measures how quickly the contents of a page are visibly populated.
