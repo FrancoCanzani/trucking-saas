@@ -15,8 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { Button } from './ui/button';
-import { cn } from '@/lib/utils';
+import { DashboardPagination } from './dashboard-table-pagination';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -35,6 +34,7 @@ export default function DataTable<TData, TValue>({
   });
 
   return (
+    <div className='space-y-4'>
     <div className='rounded border hidden md:block'>
       <Table>
         <TableHeader className=''>
@@ -78,22 +78,8 @@ export default function DataTable<TData, TValue>({
           )}
         </TableBody>
       </Table>
-      <div className="flex items-center justify-end space-x-2 py-2 px-6">
-        <button
-          className={cn('text-xs hover:underline font-medium', !table.getCanPreviousPage() && 'opacity-65 hover:no-underline cursor-not-allowed')}
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-        >
-          Previous
-        </button>
-        <button
-          className={cn('text-xs hover:underline font-medium', !table.getCanNextPage() && 'opacity-65 hover:no-underline cursor-not-allowed')}
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-        >
-          Next
-        </button>
-      </div>
+    </div>
+    <DashboardPagination table={table}/> 
     </div>
   );
 }
