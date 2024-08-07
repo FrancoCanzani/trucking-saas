@@ -38,7 +38,7 @@ const getPerformanceColor = (value: number, metric: string): string => {
     case 'CLS':
       return value <= 0.1 ? 'text-green-500' : value <= 0.25 ? 'text-yellow-500' : 'text-red-500';
     case 'TBT':
-      return value <= 200 ? 'text-green-500' : value <= 600 ? 'text-yellow-500' : 'text-red-500';
+      return value <= 200 ? 'text-green-500' : value <= 500 ? 'text-yellow-500' : 'text-red-500';
     case 'SI':
       return value <= 3400 ? 'text-green-500' : value <= 5800 ? 'text-yellow-500' : 'text-red-500';
     default:
@@ -58,7 +58,7 @@ export const columns: ColumnDef<Website>[] = [
               <div
                 className={`h-4 w-4 rounded-full text-white font-medium flex items-center justify-center ${
                   lastCheck && lastCheck.status > 200
-                    ? 'bg-red-600'
+                    ? 'bg-red-500'
                     : lastCheck && lastCheck.status <= 200
                     ? 'bg-green-500'
                     : 'bg-gray-400'
@@ -130,7 +130,7 @@ export const columns: ColumnDef<Website>[] = [
                     <TooltipTrigger asChild>
                       <div
                         className={`p-0.5 group-hover:opacity-60 hover:!opacity-100 hover:-translate-y-1 transition-all duration-150 ${
-                          check.status === 200 ? 'bg-green-500' : 'bg-red-600'
+                          check.status === 200 ? 'bg-green-500' : 'bg-red-500'
                         }`}
                         style={{
                           height: `${normalizedHeight}px`,
@@ -166,7 +166,7 @@ export const columns: ColumnDef<Website>[] = [
               );
             })
           ) : (
-            <div className='text-sm text-gray-500'>No health checks</div>
+            <div className='text-xs font-medium text-gray-500'>No health checks</div>
           )}
         </div>
       );
@@ -179,7 +179,7 @@ export const columns: ColumnDef<Website>[] = [
       const healthChecks: HealthCheck[] = row.getValue('healthChecks');
 
       if (healthChecks.length === 0) {
-        return <div className='text-sm text-gray-500'>No data</div>;
+        return <div className='text-xs font-medium text-gray-500'>No data</div>;
       }
 
       const totalChecks = healthChecks.length;
@@ -196,7 +196,7 @@ export const columns: ColumnDef<Website>[] = [
         : 'text-red-500';  
 
       return (
-        <div className={cn('font-medium text-black font-bold', colorClass)}>
+        <div className={cn('', colorClass)}>
           {uptimePercentage.toFixed()}%
         </div>
       );
@@ -219,7 +219,7 @@ export const columns: ColumnDef<Website>[] = [
       const performanceScore = speedInsights.length > 0 ? speedInsights[0].performanceScore : 'No data';
       const colorClass = typeof performanceScore === 'number' ? getPerformanceColor(performanceScore, 'Performance') : '';
       return (
-        <div className={cn('font-medium hidden md:table-cell', speedInsights.length == 0 ? 'text-gray-500' : colorClass)}>
+        <div className={cn('hidden md:table-cell', speedInsights.length == 0 ? 'text-gray-500' : colorClass)}>
           {performanceScore}
         </div>
       );
@@ -242,7 +242,7 @@ export const columns: ColumnDef<Website>[] = [
       const firstContentfulPaint = speedInsights.length > 0 ? speedInsights[0].labMetrics.firstContentfulPaint : 'No data';
       const colorClass = typeof firstContentfulPaint === 'number' ? getPerformanceColor(firstContentfulPaint, 'FCP') : '';
       return (
-        <div className={cn('font-medium hidden md:table-cell', speedInsights.length == 0 ? 'text-gray-500' : colorClass)}>
+        <div className={cn('hidden md:table-cell', speedInsights.length == 0 ? 'text-gray-500' : colorClass)}>
           {firstContentfulPaint}
         </div>
       );
@@ -265,7 +265,7 @@ export const columns: ColumnDef<Website>[] = [
       const interactive = speedInsights.length > 0 ? speedInsights[0].labMetrics.interactive : 'No data';
       const colorClass = typeof interactive === 'number' ? getPerformanceColor(interactive, 'TTI') : '';
       return (
-        <div className={cn('font-medium hidden md:table-cell', speedInsights.length == 0 ? 'text-gray-500' : colorClass)}>
+        <div className={cn('hidden md:table-cell', speedInsights.length == 0 ? 'text-gray-500' : colorClass)}>
           {interactive}
         </div>
       );
@@ -288,7 +288,7 @@ export const columns: ColumnDef<Website>[] = [
       const largestContentfulPaint = speedInsights.length > 0 ? speedInsights[0].labMetrics.largestContentfulPaint : 'No data';
       const colorClass = typeof largestContentfulPaint === 'number' ? getPerformanceColor(largestContentfulPaint, 'LCP') : '';
       return (
-        <div className={cn('font-medium hidden md:table-cell', speedInsights.length == 0 ? 'text-gray-500' : colorClass)}>
+        <div className={cn('hidden md:table-cell', speedInsights.length == 0 ? 'text-gray-500' : colorClass)}>
           {largestContentfulPaint}
         </div>
       );
@@ -312,7 +312,7 @@ export const columns: ColumnDef<Website>[] = [
       const colorClass = typeof cumulativeLayoutShift === 'number' ? getPerformanceColor(cumulativeLayoutShift, 'CLS') : '';
       
       return (
-        <div className={cn('font-medium hidden lg:table-cell', speedInsights.length == 0 ? 'text-gray-500' : colorClass)}>
+        <div className={cn('hidden md:table-cell', speedInsights.length == 0 ? 'text-gray-500' : colorClass)}>
           {cumulativeLayoutShift}
         </div>
       );
@@ -335,7 +335,7 @@ export const columns: ColumnDef<Website>[] = [
       const totalBlockingTime = speedInsights.length > 0 ? speedInsights[0].labMetrics.totalBlockingTime : 'No data';
       const colorClass = typeof totalBlockingTime === 'number' ? getPerformanceColor(totalBlockingTime, 'TBT') : '';
       return (
-        <div className={cn('font-medium hidden lg:table-cell', speedInsights.length == 0 ? 'text-gray-500' : colorClass)}>
+        <div className={cn('hidden md:table-cell', speedInsights.length == 0 ? 'text-gray-500' : colorClass)}>
           {totalBlockingTime}
         </div>
       );
@@ -358,7 +358,7 @@ export const columns: ColumnDef<Website>[] = [
       const speedIndex = speedInsights.length > 0 ? speedInsights[0].labMetrics.speedIndex : 'No data';
       const colorClass = typeof speedIndex === 'number' ? getPerformanceColor(speedIndex, 'SI') : '';
       return (
-        <div className={cn('font-medium hidden lg:table-cell', speedInsights.length == 0 ? 'text-gray-500' : colorClass)}>
+        <div className={cn('hidden md:table-cell', speedInsights.length == 0 ? 'text-gray-500' : colorClass)}>
           {speedIndex}
         </div>
       );
