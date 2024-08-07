@@ -24,6 +24,25 @@ import DeleteWebsiteButton from '@/components/delete-website-button';
 import { cn } from '@/lib/utils';
 import CheckSpeedInsightsButton from '@/components/check-speed-insights-button';
 
+const getPerformanceColor = (value: number, metric: string): string => {
+  switch (metric) {
+    case 'FCP':
+      return value <= 1800 ? 'text-green-500' : value <= 3000 ? 'text-yellow-500' : 'text-red-500';
+    case 'TTI':
+      return value <= 3800 ? 'text-green-500' : value <= 7300 ? 'text-yellow-500' : 'text-red-500';
+    case 'LCP':
+      return value <= 2500 ? 'text-green-500' : value <= 4000 ? 'text-yellow-500' : 'text-red-500';
+    case 'CLS':
+      return value <= 0.1 ? 'text-green-500' : value <= 0.25 ? 'text-yellow-500' : 'text-red-500';
+    case 'TBT':
+      return value <= 200 ? 'text-green-500' : value <= 600 ? 'text-yellow-500' : 'text-red-500';
+    case 'SI':
+      return value <= 3400 ? 'text-green-500' : value <= 5800 ? 'text-yellow-500' : 'text-red-500';
+    default:
+      return '';
+  }
+};
+
 export const columns: ColumnDef<Website>[] = [
   {
     id: 'status',
@@ -211,8 +230,8 @@ export const columns: ColumnDef<Website>[] = [
     header: () => (
       <TooltipProvider>
         <Tooltip>
-        <TooltipTrigger asChild>
-        <div className='hidden md:table-cell underline cursor-pointer'>FCP</div>
+          <TooltipTrigger asChild>
+            <div className='hidden md:table-cell underline cursor-pointer'>FCP</div>
           </TooltipTrigger>
           <TooltipContent className='font-medium'>
             First Contentful Paint (FCP) measures how long it takes for the first content to be rendered on the page.
@@ -223,8 +242,9 @@ export const columns: ColumnDef<Website>[] = [
     cell: ({ row }) => {
       const speedInsights: SpeedInsight[] = row.getValue('speedInsights') || [];
       const firstContentfulPaint = speedInsights.length > 0 ? speedInsights[0].labMetrics.firstContentfulPaint : 'No data';
+      const colorClass = typeof firstContentfulPaint === 'number' ? getPerformanceColor(firstContentfulPaint, 'FCP') : '';
       return (
-        <div className={cn('font-medium hidden md:table-cell', speedInsights.length == 0 && 'text-gray-500')}>
+        <div className={cn('font-medium hidden md:table-cell', speedInsights.length == 0 ? 'text-gray-500' : colorClass)}>
           {firstContentfulPaint}
         </div>
       );
@@ -247,8 +267,9 @@ export const columns: ColumnDef<Website>[] = [
     cell: ({ row }) => {
       const speedInsights: SpeedInsight[] = row.getValue('speedInsights') || [];
       const interactive = speedInsights.length > 0 ? speedInsights[0].labMetrics.interactive : 'No data';
+      const colorClass = typeof interactive === 'number' ? getPerformanceColor(interactive, 'TTI') : '';
       return (
-        <div className={cn('font-medium hidden md:table-cell', speedInsights.length == 0 && 'text-gray-500')}>
+        <div className={cn('font-medium hidden md:table-cell', speedInsights.length == 0 ? 'text-gray-500' : colorClass)}>
           {interactive}
         </div>
       );
@@ -271,8 +292,9 @@ export const columns: ColumnDef<Website>[] = [
     cell: ({ row }) => {
       const speedInsights: SpeedInsight[] = row.getValue('speedInsights') || [];
       const largestContentfulPaint = speedInsights.length > 0 ? speedInsights[0].labMetrics.largestContentfulPaint : 'No data';
+      const colorClass = typeof largestContentfulPaint === 'number' ? getPerformanceColor(largestContentfulPaint, 'LCP') : '';
       return (
-        <div className={cn('font-medium hidden md:table-cell', speedInsights.length == 0 && 'text-gray-500')}>
+        <div className={cn('font-medium hidden md:table-cell', speedInsights.length == 0 ? 'text-gray-500' : colorClass)}>
           {largestContentfulPaint}
         </div>
       );
@@ -295,8 +317,10 @@ export const columns: ColumnDef<Website>[] = [
     cell: ({ row }) => {
       const speedInsights: SpeedInsight[] = row.getValue('speedInsights') || [];
       const cumulativeLayoutShift = speedInsights.length > 0 ? speedInsights[0].labMetrics.cumulativeLayoutShift : 'No data';
+      const colorClass = typeof cumulativeLayoutShift === 'number' ? getPerformanceColor(cumulativeLayoutShift, 'CLS') : '';
+      
       return (
-        <div className={cn('font-medium hidden md:table-cell', speedInsights.length == 0 && 'text-gray-500')}>
+        <div className={cn('font-medium hidden md:table-cell', speedInsights.length == 0 ? 'text-gray-500' : colorClass)}>
           {cumulativeLayoutShift}
         </div>
       );
@@ -319,8 +343,9 @@ export const columns: ColumnDef<Website>[] = [
     cell: ({ row }) => {
       const speedInsights: SpeedInsight[] = row.getValue('speedInsights') || [];
       const totalBlockingTime = speedInsights.length > 0 ? speedInsights[0].labMetrics.totalBlockingTime : 'No data';
+      const colorClass = typeof totalBlockingTime === 'number' ? getPerformanceColor(totalBlockingTime, 'TBT') : '';
       return (
-        <div className={cn('font-medium hidden md:table-cell', speedInsights.length == 0 && 'text-gray-500')}>
+        <div className={cn('font-medium hidden md:table-cell', speedInsights.length == 0 ? 'text-gray-500' : colorClass)}>
           {totalBlockingTime}
         </div>
       );
@@ -343,8 +368,9 @@ export const columns: ColumnDef<Website>[] = [
     cell: ({ row }) => {
       const speedInsights: SpeedInsight[] = row.getValue('speedInsights') || [];
       const speedIndex = speedInsights.length > 0 ? speedInsights[0].labMetrics.speedIndex : 'No data';
+      const colorClass = typeof speedIndex === 'number' ? getPerformanceColor(speedIndex, 'SI') : '';
       return (
-        <div className={cn('font-medium hidden md:table-cell', speedInsights.length == 0 && 'text-gray-500')}>
+        <div className={cn('font-medium hidden md:table-cell', speedInsights.length == 0 ? 'text-gray-500' : colorClass)}>
           {speedIndex}
         </div>
       );

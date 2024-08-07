@@ -33,6 +33,7 @@ export default function DataTable<TData, TValue>({
     getPaginationRowModel: getPaginationRowModel(),
   });
 
+  
   return (
     <div className='space-y-4'>
     <div className='rounded border hidden md:block'>
