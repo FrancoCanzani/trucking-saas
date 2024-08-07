@@ -66,16 +66,17 @@ export const columns: ColumnDef<Website>[] = [
   },
   {
     accessorKey: 'url',
-    header: () => <div className='w-[150px] truncate'>URL</div>,
+    header: () => <div className='w-[150px] truncate'>Host</div>,
     cell: ({ row }) => {
+      const name = new URL(row.getValue('url')).host
       return (
         <a
           href={row.getValue('url')}
           target='_blank'
-          className='font-medium hover:underline w-[150px] lg:w-max truncate flex items-center justify-start gap-x-2'
+          className='font-medium hover:underline w-[150px] truncate flex items-center justify-start gap-x-2'
           title={row.getValue('url')}
         >
-          {row.getValue('url')}
+          {name}
         </a>
       );
     },
