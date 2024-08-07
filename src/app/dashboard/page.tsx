@@ -45,7 +45,7 @@ export default async function Websites() {
     WHERE 
       w.user_id = ${userId}
     ORDER BY 
-      w.created_at ASC, hc.checked_at ASC
+      w.created_at DESC, hc.checked_at ASC
   `;
 
   const websites: Website[] = [];
