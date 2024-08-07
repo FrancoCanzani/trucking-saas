@@ -146,7 +146,7 @@ export const columns: ColumnDef<Website>[] = [
               );
             })
           ) : (
-            <div className='text-sm text-gray-500'>No health checks yet</div>
+            <div className='text-sm text-gray-500'>No health checks</div>
           )}
         </div>
       );
@@ -200,7 +200,7 @@ export const columns: ColumnDef<Website>[] = [
       const speedInsights: SpeedInsight[] = row.getValue('speedInsights') || [];
       const performanceScore = speedInsights.length > 0 ? speedInsights[0].performanceScore : 'No data';
       return (
-        <div className='font-medium hidden md:table-cell'>
+        <div className={cn('font-medium hidden md:table-cell', speedInsights.length == 0 && 'text-gray-500')}>
           {performanceScore}
         </div>
       );
@@ -224,7 +224,7 @@ export const columns: ColumnDef<Website>[] = [
       const speedInsights: SpeedInsight[] = row.getValue('speedInsights') || [];
       const firstContentfulPaint = speedInsights.length > 0 ? speedInsights[0].labMetrics.firstContentfulPaint : 'No data';
       return (
-        <div className='font-medium hidden md:table-cell'>
+        <div className={cn('font-medium hidden md:table-cell', speedInsights.length == 0 && 'text-gray-500')}>
           {firstContentfulPaint}
         </div>
       );
@@ -248,7 +248,7 @@ export const columns: ColumnDef<Website>[] = [
       const speedInsights: SpeedInsight[] = row.getValue('speedInsights') || [];
       const interactive = speedInsights.length > 0 ? speedInsights[0].labMetrics.interactive : 'No data';
       return (
-        <div className='font-medium hidden md:table-cell'>
+        <div className={cn('font-medium hidden md:table-cell', speedInsights.length == 0 && 'text-gray-500')}>
           {interactive}
         </div>
       );
@@ -272,7 +272,7 @@ export const columns: ColumnDef<Website>[] = [
       const speedInsights: SpeedInsight[] = row.getValue('speedInsights') || [];
       const largestContentfulPaint = speedInsights.length > 0 ? speedInsights[0].labMetrics.largestContentfulPaint : 'No data';
       return (
-        <div className='font-medium hidden md:table-cell'>
+        <div className={cn('font-medium hidden md:table-cell', speedInsights.length == 0 && 'text-gray-500')}>
           {largestContentfulPaint}
         </div>
       );
@@ -296,7 +296,7 @@ export const columns: ColumnDef<Website>[] = [
       const speedInsights: SpeedInsight[] = row.getValue('speedInsights') || [];
       const cumulativeLayoutShift = speedInsights.length > 0 ? speedInsights[0].labMetrics.cumulativeLayoutShift : 'No data';
       return (
-        <div className='font-medium hidden lg:table-cell'>
+        <div className={cn('font-medium hidden md:table-cell', speedInsights.length == 0 && 'text-gray-500')}>
           {cumulativeLayoutShift}
         </div>
       );
@@ -320,7 +320,7 @@ export const columns: ColumnDef<Website>[] = [
       const speedInsights: SpeedInsight[] = row.getValue('speedInsights') || [];
       const totalBlockingTime = speedInsights.length > 0 ? speedInsights[0].labMetrics.totalBlockingTime : 'No data';
       return (
-        <div className='font-medium hidden lg:table-cell'>
+        <div className={cn('font-medium hidden md:table-cell', speedInsights.length == 0 && 'text-gray-500')}>
           {totalBlockingTime}
         </div>
       );
@@ -344,7 +344,7 @@ export const columns: ColumnDef<Website>[] = [
       const speedInsights: SpeedInsight[] = row.getValue('speedInsights') || [];
       const speedIndex = speedInsights.length > 0 ? speedInsights[0].labMetrics.speedIndex : 'No data';
       return (
-        <div className='font-medium hidden lg:table-cell'>
+        <div className={cn('font-medium hidden md:table-cell', speedInsights.length == 0 && 'text-gray-500')}>
           {speedIndex}
         </div>
       );
