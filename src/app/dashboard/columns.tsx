@@ -351,24 +351,6 @@ export const columns: ColumnDef<Website>[] = [
     },
   },  
   {
-    accessorKey: 'created_at',
-    header: () => (
-      <div className='hidden xl:table-cell'>Created</div>
-    ),
-    cell: ({ row }) => {
-      const createdAt = new Date(row.getValue('created_at'));
-      const distance = formatDistance(createdAt, new Date(), {
-        addSuffix: true,
-      });
-
-      return (
-        <div className='font-medium capitalize hidden xl:table-cell'>
-          {distance}
-        </div>
-      );
-    },
-  },
-  {
     id: 'check',
     cell: ({ row }) => {
       const website: Website = row.original;
