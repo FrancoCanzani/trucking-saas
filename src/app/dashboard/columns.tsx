@@ -23,6 +23,7 @@ import { Button } from '@/components/ui/button';
 import DeleteWebsiteButton from '@/components/delete-website-button';
 import { cn } from '@/lib/utils';
 import CheckSpeedInsightsButton from '@/components/check-speed-insights-button';
+import { ArrowUpDown } from "lucide-react"
 
 const getPerformanceColor = (value: number, metric: string): string => {
   switch (metric) {
@@ -52,9 +53,8 @@ export const columns: ColumnDef<Website>[] = [
       const healthChecks: HealthCheck[] = row.getValue('healthChecks');
       const lastCheck: HealthCheck | undefined = healthChecks.slice(-1)[0];
       return (
-        <TooltipProvider>
           <Tooltip>
-            <TooltipTrigger className='flex items-center justify-center'>
+            <TooltipTrigger className='flex items-center justify-center w-full'>
               <div
                 className={`h-4 w-4 rounded-full text-white font-medium flex items-center justify-center ${
                   lastCheck && lastCheck.status > 200
@@ -81,13 +81,14 @@ export const columns: ColumnDef<Website>[] = [
                 : 'No checks yet'}
             </TooltipContent>
           </Tooltip>
-        </TooltipProvider>
       );
     },
   },
   {
     accessorKey: 'url',
-    header: () => <div className='w-[150px] truncate'>Host</div>,
+    header: ({ column }) => <button onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+    className='w-[150px] truncate text-start flex gap-x-1 items-center'>Host <ArrowUpDown size={12}/>
+</button>,
     cell: ({ row }) => {
       const name = new URL(row.getValue('url')).host
       return (
@@ -125,8 +126,7 @@ export const columns: ColumnDef<Website>[] = [
               );
 
               return (
-                <TooltipProvider key={check.id}>
-                  <Tooltip>
+                  <Tooltip key={check.id}>
                     <TooltipTrigger asChild>
                       <div
                         className={`p-0.5 group-hover:opacity-60 hover:!opacity-100 hover:-translate-y-1 transition-all duration-150 ${
@@ -163,7 +163,6 @@ export const columns: ColumnDef<Website>[] = [
                       </div>
                     </TooltipContent>
                   </Tooltip>
-                </TooltipProvider>
               );
             })
           ) : (
@@ -175,7 +174,7 @@ export const columns: ColumnDef<Website>[] = [
   },
   {
     id: 'uptime',
-    header: () => <div className='w-max'>Uptime</div>,
+    header: () => <div>Uptime</div>,
     cell: ({ row }) => {
       const healthChecks: HealthCheck[] = row.getValue('healthChecks');
 
@@ -206,16 +205,14 @@ export const columns: ColumnDef<Website>[] = [
   {
     accessorKey: 'speedInsights',
     header: () => (
-      <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
-            <div className='hidden md:table-cell underline cursor-pointer'>Performance</div>
+            <div className='hidden md:table-cell underline cursor-pointer'>Perf.</div>
           </TooltipTrigger>
           <TooltipContent className='font-medium'>
             The performance score from Lighthouse, indicating overall page performance.
           </TooltipContent>
         </Tooltip>
-      </TooltipProvider>
     ),
     cell: ({ row }) => {
       const speedInsights: SpeedInsight[] = row.getValue('speedInsights') || [];
@@ -231,7 +228,6 @@ export const columns: ColumnDef<Website>[] = [
   {
     accessorKey: 'speedInsights',
     header: () => (
-      <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
             <div className='hidden md:table-cell underline cursor-pointer'>FCP</div>
@@ -240,7 +236,6 @@ export const columns: ColumnDef<Website>[] = [
             First Contentful Paint (FCP) measures how long it takes for the first content to be rendered on the page.
           </TooltipContent>
         </Tooltip>
-      </TooltipProvider>
     ),
     cell: ({ row }) => {
       const speedInsights: SpeedInsight[] = row.getValue('speedInsights') || [];
@@ -256,7 +251,6 @@ export const columns: ColumnDef<Website>[] = [
   {
     accessorKey: 'speedInsights',
     header: () => (
-      <TooltipProvider>
         <Tooltip>
         <TooltipTrigger asChild>
         <div className='hidden md:table-cell underline cursor-pointer'>TTI</div>
@@ -265,7 +259,6 @@ export const columns: ColumnDef<Website>[] = [
             Time to Interactive (TTI) measures how long it takes for the page to become fully interactive.
           </TooltipContent>
         </Tooltip>
-      </TooltipProvider>
     ),
     cell: ({ row }) => {
       const speedInsights: SpeedInsight[] = row.getValue('speedInsights') || [];
@@ -281,7 +274,6 @@ export const columns: ColumnDef<Website>[] = [
   {
     accessorKey: 'speedInsights',
     header: () => (
-      <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
             <div className='hidden md:table-cell underline cursor-pointer'>LCP</div>
@@ -290,7 +282,6 @@ export const columns: ColumnDef<Website>[] = [
             Largest Contentful Paint (LCP) measures how long it takes for the largest content element on the page to be visible.
           </TooltipContent>
         </Tooltip>
-      </TooltipProvider>
     ),
     cell: ({ row }) => {
       const speedInsights: SpeedInsight[] = row.getValue('speedInsights') || [];
@@ -306,7 +297,6 @@ export const columns: ColumnDef<Website>[] = [
   {
     accessorKey: 'speedInsights',
     header: () => (
-      <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
             <div className='hidden lg:table-cell underline cursor-pointer'>CLS</div>
@@ -315,7 +305,6 @@ export const columns: ColumnDef<Website>[] = [
             Cumulative Layout Shift (CLS) measures the total amount of unexpected layout shift on the page during its lifespan.
           </TooltipContent>
         </Tooltip>
-      </TooltipProvider>
     ),
     cell: ({ row }) => {
       const speedInsights: SpeedInsight[] = row.getValue('speedInsights') || [];
@@ -323,7 +312,7 @@ export const columns: ColumnDef<Website>[] = [
       const colorClass = typeof cumulativeLayoutShift === 'number' ? getPerformanceColor(cumulativeLayoutShift, 'CLS') : '';
       
       return (
-        <div className={cn('font-medium hidden md:table-cell', speedInsights.length == 0 ? 'text-gray-500' : colorClass)}>
+        <div className={cn('font-medium hidden lg:table-cell', speedInsights.length == 0 ? 'text-gray-500' : colorClass)}>
           {cumulativeLayoutShift}
         </div>
       );
@@ -332,7 +321,6 @@ export const columns: ColumnDef<Website>[] = [
   {
     accessorKey: 'speedInsights',
     header: () => (
-      <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
             <div className='hidden lg:table-cell underline cursor-pointer'>TBT</div>
@@ -341,14 +329,13 @@ export const columns: ColumnDef<Website>[] = [
             Total Blocking Time (TBT) measures the total amount of time during which the page is blocked from responding to user input.
           </TooltipContent>
         </Tooltip>
-      </TooltipProvider>
     ),
     cell: ({ row }) => {
       const speedInsights: SpeedInsight[] = row.getValue('speedInsights') || [];
       const totalBlockingTime = speedInsights.length > 0 ? speedInsights[0].labMetrics.totalBlockingTime : 'No data';
       const colorClass = typeof totalBlockingTime === 'number' ? getPerformanceColor(totalBlockingTime, 'TBT') : '';
       return (
-        <div className={cn('font-medium hidden md:table-cell', speedInsights.length == 0 ? 'text-gray-500' : colorClass)}>
+        <div className={cn('font-medium hidden lg:table-cell', speedInsights.length == 0 ? 'text-gray-500' : colorClass)}>
           {totalBlockingTime}
         </div>
       );
@@ -357,7 +344,6 @@ export const columns: ColumnDef<Website>[] = [
   {
     accessorKey: 'speedInsights',
     header: () => (
-      <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
             <div className='hidden lg:table-cell underline cursor-pointer'>SI</div>
@@ -366,14 +352,13 @@ export const columns: ColumnDef<Website>[] = [
             Speed Index (SI) measures how quickly the contents of a page are visibly populated.
           </TooltipContent>
         </Tooltip>
-      </TooltipProvider>
     ),
     cell: ({ row }) => {
       const speedInsights: SpeedInsight[] = row.getValue('speedInsights') || [];
       const speedIndex = speedInsights.length > 0 ? speedInsights[0].labMetrics.speedIndex : 'No data';
       const colorClass = typeof speedIndex === 'number' ? getPerformanceColor(speedIndex, 'SI') : '';
       return (
-        <div className={cn('font-medium hidden md:table-cell', speedInsights.length == 0 ? 'text-gray-500' : colorClass)}>
+        <div className={cn('font-medium hidden lg:table-cell', speedInsights.length == 0 ? 'text-gray-500' : colorClass)}>
           {speedIndex}
         </div>
       );

@@ -14,7 +14,7 @@ export default function DashboardTableMobileView({
       {websites.map((website) => (
         <div
           key={website.id}
-          className='bg-white space-y-1 py-2 px-2.5 rounded-sm border hover:shadow'
+          className='bg-white space-y-1 py-2 px-2.5 rounded border hover:shadow'
         >
           <div className='flex items-center justify-start space-x-2'>
             <div

@@ -30,7 +30,7 @@ export default function HealthCheckOutput({
     <div className='mt-6 w-full m-auto'>
       <div
         className={cn(
-          'p-1.5 border hover:shadow transition-all duration-200 flex flex-col space-y-4 rounded-sm text-sm',
+          'p-1.5 border hover:shadow transition-all duration-200 flex flex-col space-y-4 rounded text-sm',
           {
             'bg-green-100 hover:shadow-green-100': isSuccessful,
             'bg-red-100  hover:shadow-red-100': !isSuccessful,
@@ -83,7 +83,7 @@ export default function HealthCheckOutput({
             <p>Browser: {data.browserInfo.name} {data.browserInfo.version}</p>
           )}
           <div
-            className={cn('p-3 rounded-sm font-medium', {
+            className={cn('p-3 rounded font-medium', {
               'bg-green-200': isSuccessful,
               'bg-red-200': !isSuccessful,
             })}

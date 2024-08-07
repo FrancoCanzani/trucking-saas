@@ -2,11 +2,15 @@
 
 import {
   ColumnDef,
+  ColumnFiltersState,
+  SortingState,
   flexRender,
   getCoreRowModel,
+  getFilteredRowModel,
   getPaginationRowModel,
+  getSortedRowModel,
   useReactTable,
-} from '@tanstack/react-table';
+} from "@tanstack/react-table"
 import {
   Table,
   TableBody,
@@ -16,6 +20,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { DashboardPagination } from './dashboard-table-pagination';
+import { useState } from "react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -26,24 +31,36 @@ export default function DataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
+  const [sorting, setSorting] = useState<SortingState>([])
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(
+    []
+  )
   const table = useReactTable({
     data,
     columns,
+    onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-  });
+    getSortedRowModel: getSortedRowModel(),
+    onColumnFiltersChange: setColumnFilters,
+    getFilteredRowModel: getFilteredRowModel(),
+    state: {
+      sorting,
+      columnFilters,
+    },
+  })
 
   
   return (
-    <div className='space-y-4'>
-    <div className='rounded border hidden md:block'>
-      <Table>
+    <div className='space-y-4 hidden md:block'>
+    <div className='border rounded text-xs'>
+      <Table className='text-xs'>
         <TableHeader className=''>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => {
                 return (
-                  <TableHead key={header.id}>
+                  <TableHead key={header.id} className=''>
                     {header.isPlaceholder
                       ? null
                       : flexRender(
@@ -56,7 +73,7 @@ export default function DataTable<TData, TValue>({
             </TableRow>
           ))}
         </TableHeader>
-        <TableBody className='text-sm'>
+        <TableBody className='text-xs font-normal'>
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
               <TableRow
@@ -64,7 +81,7 @@ export default function DataTable<TData, TValue>({
                 data-state={row.getIsSelected() && 'selected'}
               >
                 {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
+                  <TableCell key={cell.id} className=''>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}

@@ -121,8 +121,6 @@ export default async function Websites() {
       }
     }
   });
-
-  console.log(websites[0].speedInsights);
   
   return <Dashboard websites={websites} />;
 }
