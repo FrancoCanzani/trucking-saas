@@ -1,34 +1,18 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
-
-// Define Zod schema for the expected parameters
-const QuerySchema = z.object({
-  url: z.string().url(),
-  timeout: z.string().optional()
-});
-
-const DEFAULT_TIMEOUT = 10000;
-
-// Define Zod schema for the response
-const ResponseSchema = z.object({
-  status: z.number(),
-  responseTime: z.number(),
-  date: z.string().optional()
-});
+import { HealthCheckQuerySchema, HealthCheckResponseSchema } from '@/lib/validation';
 
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const params = Object.fromEntries(searchParams.entries());
 
-    // Validate request parameters using Zod
-    const validatedParams = QuerySchema.parse(params);
+    const validatedParams = HealthCheckQuerySchema.parse(params);
 
     const url = validatedParams.url;
-    const timeout = validatedParams.timeout ? parseInt(validatedParams.timeout, 10) : DEFAULT_TIMEOUT;
 
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), timeout);
+    const timeoutId = setTimeout(() => controller.abort(), 20000);
 
     const start = performance.now();
 
@@ -58,8 +42,7 @@ export async function GET(request: Request) {
       date: headers['date']
     };
 
-    // Validate the response data using Zod
-    const validatedResponse = ResponseSchema.parse(resData);
+    const validatedResponse = HealthCheckResponseSchema.parse(resData);
 
     return NextResponse.json(validatedResponse, { status: 200 });
   } catch (error) {
