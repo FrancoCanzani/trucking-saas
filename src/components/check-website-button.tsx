@@ -19,7 +19,7 @@ export default function CheckWebsiteButton({
       toast.promise(healthCheckPromise, {
         loading: 'Performing health check...',
         success: (data) => {
-          return `Health check ended with status ${data.status} - ${data.statusText}.`;
+          return `Health check ended with status ${data.status}`;
         },
         error: 'Error performing the health check.',
       });

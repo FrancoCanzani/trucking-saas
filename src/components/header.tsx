@@ -1,24 +1,22 @@
+'use client'
+
 import {
   SignInButton,
   SignOutButton,
   SignedIn,
   SignedOut,
 } from '@clerk/nextjs';
-import Link from 'next/link';
-import { auth } from '@clerk/nextjs/server';
+import { useUser } from '@clerk/nextjs';
 
 export default function Header() {
-  const { userId } = auth();
+  const { isSignedIn, user } = useUser();
 
   return (
-    <header className='flex w-full font-medium capitalize mb-4 items-center justify-between'>
-      {userId && <Link href={'/dashboard'}>Dashboard</Link>}
-      <SignedOut>
-        <SignInButton />
-      </SignedOut>
-      <SignedIn>
-        <SignOutButton />
-      </SignedIn>
+    <header className='sticky top-0 z-30 flex h-14 items-center justify-end gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6'>
+    <SignOutButton />
+      {isSignedIn && (
+        <p className='font-medium'>Hello, {user.firstName} 👋</p>
+      )}
     </header>
   );
 }

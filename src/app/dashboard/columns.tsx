@@ -78,7 +78,7 @@ export const columns: ColumnDef<Website>[] = [
 
       return (
         <Link
-        href={`/dashboard/monitoring/${id}`} 
+        href={`/dashboard/monitoring/${id}/overview`} 
         className='font-medium hover:underline truncate flex items-center justify-start gap-x-2'
           title={row.getValue('url')}
         >
