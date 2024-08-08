@@ -84,6 +84,21 @@ export interface SpeedInsight {
   checkedAt: string;
 }
 
+export interface HealthCheck {
+  id: number;
+  status: number;
+  response_time: number;
+  checked_at: string;
+}
+
+export interface Percentiles {
+  p50: number;
+  p75: number;
+  p90: number;
+  p95: number;
+  p99: number;
+}
+
 export interface Website {
   id: number;
   user_id: string;
@@ -93,5 +108,5 @@ export interface Website {
   created_at: string;
   updated_at: string;
   healthChecks: HealthCheck[];
-  speedInsights: SpeedInsight[]; 
+  percentiles: Percentiles;
 }

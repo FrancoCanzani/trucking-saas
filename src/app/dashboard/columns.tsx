@@ -1,7 +1,7 @@
 'use client';
 
 import { ColumnDef } from '@tanstack/react-table';
-import { HealthCheck, SpeedInsight, Website } from '@/lib/types';
+import { HealthCheck, Website } from '@/lib/types';
 import { formatDistance } from 'date-fns';
 import CheckWebsiteButton from '@/components/check-website-button';
 import {
@@ -18,37 +18,18 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Ellipsis } from 'lucide-react';
+import { Ellipsis, Activity } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import DeleteWebsiteButton from '@/components/delete-website-button';
 import { cn } from '@/lib/utils';
 import CheckSpeedInsightsButton from '@/components/check-speed-insights-button';
 import { ArrowUpDown } from "lucide-react"
 
-const getPerformanceColor = (value: number, metric: string): string => {
-  switch (metric) {
-    case 'Performance':
-      return value >= 85 ? 'text-green-500' : value >= 65 ? 'text-yellow-500' : 'text-red-500';
-    case 'FCP':
-      return value <= 1800 ? 'text-green-500' : value <= 3000 ? 'text-yellow-500' : 'text-red-500';
-    case 'TTI':
-      return value <= 3800 ? 'text-green-500' : value <= 7300 ? 'text-yellow-500' : 'text-red-500';
-    case 'LCP':
-      return value <= 2500 ? 'text-green-500' : value <= 4000 ? 'text-yellow-500' : 'text-red-500';
-    case 'CLS':
-      return value <= 0.1 ? 'text-green-500' : value <= 0.25 ? 'text-yellow-500' : 'text-red-500';
-    case 'TBT':
-      return value <= 200 ? 'text-green-500' : value <= 500 ? 'text-yellow-500' : 'text-red-500';
-    case 'SI':
-      return value <= 3400 ? 'text-green-500' : value <= 5800 ? 'text-yellow-500' : 'text-red-500';
-    default:
-      return '';
-  }
-};
 
 export const columns: ColumnDef<Website>[] = [
   {
     id: 'status',
+    header: () => <div className='flex items-center justify-center w-full'><Activity size={14}/></div>,
     cell: ({ row }) => {
       const healthChecks: HealthCheck[] = row.getValue('healthChecks');
       const lastCheck: HealthCheck | undefined = healthChecks.slice(-1)[0];
@@ -87,7 +68,7 @@ export const columns: ColumnDef<Website>[] = [
   {
     accessorKey: 'url',
     header: ({ column }) => <button onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-    className='w-[180px] truncate text-start flex gap-x-1 items-center'>Host <ArrowUpDown size={12}/>
+    className='truncate text-start flex gap-x-1 items-center'>Host <ArrowUpDown size={12}/>
 </button>,
     cell: ({ row }) => {
       const name = new URL(row.getValue('url')).host
@@ -95,10 +76,10 @@ export const columns: ColumnDef<Website>[] = [
         <a
           href={row.getValue('url')}
           target='_blank'
-          className='font-medium hover:underline w-[180px] truncate flex items-center justify-start gap-x-2'
+          className='font-medium hover:underline truncate flex items-center justify-start gap-x-2'
           title={row.getValue('url')}
         >
-          <span className='bg-gray-50 rounded shadow-sm border p-1'>{name}</span>
+          <span className='bg-slate-50 rounded shadow-sm border p-1'>{name}</span>
         </a>
       );
     },
@@ -129,7 +110,7 @@ export const columns: ColumnDef<Website>[] = [
                   <Tooltip key={check.id}>
                     <TooltipTrigger asChild>
                       <div
-                        className={`p-0.5 group-hover:opacity-60 hover:!opacity-100 hover:-translate-y-1 transition-all duration-150 ${
+                        className={`p-0.5 px-0.5 group-hover:opacity-60 hover:!opacity-100 hover:-translate-y-1 transition-all duration-150 ${
                           check.status === 200 ? 'bg-green-500' : 'bg-red-500'
                         }`}
                         style={{
@@ -189,181 +170,43 @@ export const columns: ColumnDef<Website>[] = [
 
       const uptimePercentage = (successfulChecks / totalChecks) * 100;
 
-      const colorClass = uptimePercentage >= 90
-        ? 'text-green-500' 
-        : uptimePercentage >= 70
-        ? 'text-yellow-500' 
-        : 'text-red-500';  
-
       return (
-        <div className={cn('', colorClass)}>
+        <div className={cn('font-medium')}>
           {uptimePercentage.toFixed()}%
         </div>
       );
     },
   },
   {
-    accessorKey: 'speedInsights',
-    header: () => (
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <div className='hidden md:table-cell wavy cursor-pointer'>Perf.</div>
-          </TooltipTrigger>
-          <TooltipContent className='font-medium'>
-            The performance score from Lighthouse, indicating overall page performance.
-          </TooltipContent>
-        </Tooltip>
-    ),
+    id: 'p50',
+    header: () => <div>P50</div>,
     cell: ({ row }) => {
-      const speedInsights: SpeedInsight[] = row.getValue('speedInsights') || [];
-      const performanceScore = speedInsights.length > 0 ? speedInsights[0].performanceScore : 'No data';
-      const colorClass = typeof performanceScore === 'number' ? getPerformanceColor(performanceScore, 'Performance') : '';
-      return (
-        <div className={cn('hidden md:table-cell', speedInsights.length == 0 ? 'text-gray-500' : colorClass)}>
-          {performanceScore}
-        </div>
-      );
+      const p50 = row.original.percentiles.p50
+      return <div className='font-medium'>{Math.round(p50)} ms</div>;
     },
   },
   {
-    accessorKey: 'speedInsights',
-    header: () => (
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <div className='hidden md:table-cell wavy cursor-pointer'>FCP</div>
-          </TooltipTrigger>
-          <TooltipContent className='font-medium'>
-            First Contentful Paint (FCP) measures how long it takes for the first content to be rendered on the page.
-          </TooltipContent>
-        </Tooltip>
-    ),
+    id: 'p75',
+    header: () => <div>P75</div>,
     cell: ({ row }) => {
-      const speedInsights: SpeedInsight[] = row.getValue('speedInsights') || [];
-      const firstContentfulPaint = speedInsights.length > 0 ? speedInsights[0].labMetrics.firstContentfulPaint : 'No data';
-      const colorClass = typeof firstContentfulPaint === 'number' ? getPerformanceColor(firstContentfulPaint, 'FCP') : '';
-      return (
-        <div className={cn('hidden md:table-cell', speedInsights.length == 0 ? 'text-gray-500' : colorClass)}>
-          {firstContentfulPaint}
-        </div>
-      );
+      const p75 = row.original.percentiles.p75
+      return <div className='font-medium'>{Math.round(p75)} ms</div>;
+    },
+  },  {
+    id: 'p90',
+    header: () => <div>P90</div>,
+    cell: ({ row }) => {
+      const p90 = row.original.percentiles.p90
+      return <div className='font-medium'>{Math.round(p90)} ms</div>;
+    },
+  },  {
+    id: 'p99',
+    header: () => <div>P99</div>,
+    cell: ({ row }) => {
+      const p99 = row.original.percentiles.p99
+      return <div className='font-medium'>{Math.round(p99)} ms</div>;
     },
   },
-  {
-    accessorKey: 'speedInsights',
-    header: () => (
-        <Tooltip>
-        <TooltipTrigger asChild>
-        <div className='hidden md:table-cell wavy cursor-pointer'>TTI</div>
-          </TooltipTrigger>
-          <TooltipContent className='font-medium'>
-            Time to Interactive (TTI) measures how long it takes for the page to become fully interactive.
-          </TooltipContent>
-        </Tooltip>
-    ),
-    cell: ({ row }) => {
-      const speedInsights: SpeedInsight[] = row.getValue('speedInsights') || [];
-      const interactive = speedInsights.length > 0 ? speedInsights[0].labMetrics.interactive : 'No data';
-      const colorClass = typeof interactive === 'number' ? getPerformanceColor(interactive, 'TTI') : '';
-      return (
-        <div className={cn('hidden md:table-cell', speedInsights.length == 0 ? 'text-gray-500' : colorClass)}>
-          {interactive}
-        </div>
-      );
-    },
-  },
-  {
-    accessorKey: 'speedInsights',
-    header: () => (
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <div className='hidden md:table-cell wavy cursor-pointer'>LCP</div>
-          </TooltipTrigger>
-          <TooltipContent className='font-medium'>
-            Largest Contentful Paint (LCP) measures how long it takes for the largest content element on the page to be visible.
-          </TooltipContent>
-        </Tooltip>
-    ),
-    cell: ({ row }) => {
-      const speedInsights: SpeedInsight[] = row.getValue('speedInsights') || [];
-      const largestContentfulPaint = speedInsights.length > 0 ? speedInsights[0].labMetrics.largestContentfulPaint : 'No data';
-      const colorClass = typeof largestContentfulPaint === 'number' ? getPerformanceColor(largestContentfulPaint, 'LCP') : '';
-      return (
-        <div className={cn('hidden md:table-cell', speedInsights.length == 0 ? 'text-gray-500' : colorClass)}>
-          {largestContentfulPaint}
-        </div>
-      );
-    },
-  },
-  {
-    accessorKey: 'speedInsights',
-    header: () => (
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <div className='hidden lg:table-cell wavy cursor-pointer'>CLS</div>
-          </TooltipTrigger>
-          <TooltipContent className='font-medium'>
-            Cumulative Layout Shift (CLS) measures the total amount of unexpected layout shift on the page during its lifespan.
-          </TooltipContent>
-        </Tooltip>
-    ),
-    cell: ({ row }) => {
-      const speedInsights: SpeedInsight[] = row.getValue('speedInsights') || [];
-      const cumulativeLayoutShift = speedInsights.length > 0 ? speedInsights[0].labMetrics.cumulativeLayoutShift : 'No data';
-      const colorClass = typeof cumulativeLayoutShift === 'number' ? getPerformanceColor(cumulativeLayoutShift, 'CLS') : '';
-      
-      return (
-        <div className={cn('hidden md:table-cell', speedInsights.length == 0 ? 'text-gray-500' : colorClass)}>
-          {cumulativeLayoutShift}
-        </div>
-      );
-    },
-  },
-  {
-    accessorKey: 'speedInsights',
-    header: () => (
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <div className='hidden lg:table-cell wavy cursor-pointer'>TBT</div>
-          </TooltipTrigger>
-          <TooltipContent className='font-medium'>
-            Total Blocking Time (TBT) measures the total amount of time during which the page is blocked from responding to user input.
-          </TooltipContent>
-        </Tooltip>
-    ),
-    cell: ({ row }) => {
-      const speedInsights: SpeedInsight[] = row.getValue('speedInsights') || [];
-      const totalBlockingTime = speedInsights.length > 0 ? speedInsights[0].labMetrics.totalBlockingTime : 'No data';
-      const colorClass = typeof totalBlockingTime === 'number' ? getPerformanceColor(totalBlockingTime, 'TBT') : '';
-      return (
-        <div className={cn('hidden md:table-cell', speedInsights.length == 0 ? 'text-gray-500' : colorClass)}>
-          {totalBlockingTime}
-        </div>
-      );
-    },
-  },
-  {
-    accessorKey: 'speedInsights',
-    header: () => (
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <div className='hidden lg:table-cell wavy cursor-pointer'>SI</div>
-          </TooltipTrigger>
-          <TooltipContent className='font-medium'>
-            Speed Index (SI) measures how quickly the contents of a page are visibly populated.
-          </TooltipContent>
-        </Tooltip>
-    ),
-    cell: ({ row }) => {
-      const speedInsights: SpeedInsight[] = row.getValue('speedInsights') || [];
-      const speedIndex = speedInsights.length > 0 ? speedInsights[0].labMetrics.speedIndex : 'No data';
-      const colorClass = typeof speedIndex === 'number' ? getPerformanceColor(speedIndex, 'SI') : '';
-      return (
-        <div className={cn('hidden md:table-cell', speedInsights.length == 0 ? 'text-gray-500' : colorClass)}>
-          {speedIndex}
-        </div>
-      );
-    },
-  },  
   {
     id: 'check',
     cell: ({ row }) => {
