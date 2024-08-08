@@ -8,7 +8,6 @@ import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-  TooltipProvider,
 } from '@/components/ui/tooltip';
 import {
   DropdownMenu,
@@ -149,8 +148,23 @@ export const columns: ColumnDef<Website>[] = [
               );
             })
           ) : (
-            <div className='text-xs font-medium text-gray-500'>No health checks</div>
+            <div className='text-xs font-medium text-gray-500'>-</div>
           )}
+        </div>
+      );
+    },
+  },
+  {
+    id: 'lastHealthCheck',
+    header: () => <div>Last Health Check</div>,
+    cell: ({ row }) => {
+      const healthChecks: HealthCheck[] = row.getValue('healthChecks');
+      const lastCheck: HealthCheck | undefined = healthChecks.slice(-1)[0];
+      return (
+        <div className='font-medium'>
+          {lastCheck
+            ? formatDistance(lastCheck.checked_at, new Date(), { addSuffix: true })
+            : <span className='text-gray-500'>-</span>}
         </div>
       );
     },
@@ -162,7 +176,7 @@ export const columns: ColumnDef<Website>[] = [
       const healthChecks: HealthCheck[] = row.getValue('healthChecks');
 
       if (healthChecks.length === 0) {
-        return <div className='text-xs font-medium text-gray-500'>No data</div>;
+        return <div className='text-xs font-medium text-gray-500'>-</div>;
       }
 
       const totalChecks = healthChecks.length;
@@ -183,32 +197,36 @@ export const columns: ColumnDef<Website>[] = [
     id: 'p50',
     header: () => <div>P50</div>,
     cell: ({ row }) => {
-      const p50 = row.original.percentiles.p50
-      return <div className='font-medium'>{Math.round(p50)} ms</div>;
+      const healthChecks: HealthCheck[] = row.getValue('healthChecks');
+      const p50 = healthChecks.length > 0 ? row.original.percentiles.p50 : undefined;
+      return <div className='font-medium'>{p50 !== undefined ? Math.round(p50) + ' ms' : <span className='text-gray-500'>-</span>}</div>;
     },
   },
   {
     id: 'p75',
     header: () => <div>P75</div>,
     cell: ({ row }) => {
-      const p75 = row.original.percentiles.p75
-      return <div className='font-medium'>{Math.round(p75)} ms</div>;
+      const healthChecks: HealthCheck[] = row.getValue('healthChecks');
+      const p75 = healthChecks.length > 0 ? row.original.percentiles.p75 : undefined;
+      return <div className='font-medium'>{p75 !== undefined ? Math.round(p75) + ' ms' : <span className='text-gray-500'>-</span>}</div>;
     },
   },
   {
     id: 'p90',
     header: () => <div>P90</div>,
     cell: ({ row }) => {
-      const p90 = row.original.percentiles.p90
-      return <div className='font-medium'>{Math.round(p90)} ms</div>;
+      const healthChecks: HealthCheck[] = row.getValue('healthChecks');
+      const p90 = healthChecks.length > 0 ? row.original.percentiles.p90 : undefined;
+      return <div className='font-medium'>{p90 !== undefined ? Math.round(p90) + ' ms' : <span className='text-gray-500'>-</span>}</div>;
     },
   },
   {
     id: 'p99',
     header: () => <div>P99</div>,
     cell: ({ row }) => {
-      const p99 = row.original.percentiles.p99
-      return <div className='font-medium'>{Math.round(p99)} ms</div>;
+      const healthChecks: HealthCheck[] = row.getValue('healthChecks');
+      const p99 = healthChecks.length > 0 ? row.original.percentiles.p99 : undefined;
+      return <div className='font-medium'>{p99 !== undefined ? Math.round(p99) + ' ms' : <span className='text-gray-500'>-</span>}</div>;
     },
   },
   {
