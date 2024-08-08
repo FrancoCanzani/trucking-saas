@@ -1,20 +1,32 @@
 import { NextResponse } from 'next/server';
+import { z } from 'zod';
 
-const DEFAULT_TIMEOUT = 10000; 
+// Define Zod schema for the expected parameters
+const QuerySchema = z.object({
+  url: z.string().url(),
+  timeout: z.string().optional()
+});
+
+const DEFAULT_TIMEOUT = 10000;
+
+// Define Zod schema for the response
+const ResponseSchema = z.object({
+  status: z.number(),
+  responseTime: z.number(),
+  date: z.string().optional()
+});
 
 export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-  const url = searchParams.get('url');
-  const timeout = parseInt(searchParams.get('timeout') ?? DEFAULT_TIMEOUT.toString(), 10);
-
-  if (!url || typeof url !== 'string') {
-    return NextResponse.json(
-      { message: 'Invalid or missing URL' },
-      { status: 400 }
-    );
-  }
-
   try {
+    const { searchParams } = new URL(request.url);
+    const params = Object.fromEntries(searchParams.entries());
+
+    // Validate request parameters using Zod
+    const validatedParams = QuerySchema.parse(params);
+
+    const url = validatedParams.url;
+    const timeout = validatedParams.timeout ? parseInt(validatedParams.timeout, 10) : DEFAULT_TIMEOUT;
+
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeout);
 
@@ -36,24 +48,20 @@ export async function GET(request: Request) {
     const headers = Object.fromEntries(response.headers.entries());
     const status = response.status;
 
-    let message = getStatusMessage(status);
-    let additionalInfo = {};
-
-    if (status >= 300 && status < 400) {
-      additionalInfo = { location: headers['location'] };
+    if (status > 203) {
+      throw new Error(`Unexpected status code: ${status}`);
     }
 
     const resData = {
       status,
-      statusText: response.statusText,
-      message,
       responseTime,
-      headers,
-      url: response.url,
-      ...additionalInfo,
+      date: headers['date']
     };
 
-    return NextResponse.json(resData, { status: 200 });
+    // Validate the response data using Zod
+    const validatedResponse = ResponseSchema.parse(resData);
+
+    return NextResponse.json(validatedResponse, { status: 200 });
   } catch (error) {
     console.error('Error performing health check:', error);
 
@@ -70,31 +78,18 @@ export async function GET(request: Request) {
   }
 }
 
-function getStatusMessage(status: number): string {
-  const statusMessages: { [key: number]: string } = {
-    200: 'OK',
-    201: 'Created',
-    204: 'No Content',
-    301: 'Moved Permanently',
-    302: 'Found',
-    304: 'Not Modified',
-    400: 'Bad Request',
-    401: 'Unauthorized',
-    403: 'Forbidden',
-    404: 'Not Found',
-    500: 'Internal Server Error',
-    503: 'Service Unavailable',
-  };
-
-  return statusMessages[status] || 'Unexpected Status Code';
-}
-
 function handleError(error: unknown): { errorMessage: string; errorStatus: number } {
+  if (error instanceof z.ZodError) {
+    return { errorMessage: 'Invalid input parameters', errorStatus: 400 };
+  }
   if (error instanceof TypeError && error.message === 'Failed to fetch') {
     return { errorMessage: 'Network error or CORS issue', errorStatus: 503 };
   }
   if (error instanceof DOMException && error.name === 'AbortError') {
     return { errorMessage: 'Request timed out', errorStatus: 504 };
+  }
+  if (error instanceof Error && error.message.startsWith('Unexpected status code:')) {
+    return { errorMessage: error.message, errorStatus: 502 };
   }
   return { errorMessage: 'Unknown error occurred', errorStatus: 500 };
 }
