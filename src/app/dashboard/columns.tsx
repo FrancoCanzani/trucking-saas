@@ -22,6 +22,7 @@ import DeleteWebsiteButton from '@/components/delete-website-button';
 import { cn } from '@/lib/utils';
 import CheckSpeedInsightsButton from '@/components/check-speed-insights-button';
 import { ArrowUpDown } from "lucide-react";
+import Link from 'next/link';
 
 export const columns: ColumnDef<Website>[] = [
   {
@@ -71,17 +72,18 @@ export const columns: ColumnDef<Website>[] = [
         Host <ArrowUpDown size={12}/>
       </button>
     ),
-    cell: ({ row }) => {
+    cell: ({ row }) => {   
       const name = new URL(row.getValue('url')).host
+      const id = row.original.id;
+
       return (
-        <a
-          href={row.getValue('url')}
-          target='_blank'
-          className='font-medium hover:underline truncate flex items-center justify-start gap-x-2'
+        <Link
+        href={`/dashboard/monitoring/${id}`} 
+        className='font-medium hover:underline truncate flex items-center justify-start gap-x-2'
           title={row.getValue('url')}
         >
           <span className='bg-slate-50 rounded shadow-sm border p-1'>{name}</span>
-        </a>
+        </Link>
       );
     },
   },
