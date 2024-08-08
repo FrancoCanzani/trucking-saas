@@ -21,6 +21,7 @@ import {
 } from '@/components/ui/table';
 import { DashboardPagination } from './dashboard-table-pagination';
 import { useState } from "react";
+import { Input } from "@/components/ui/input"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -53,6 +54,16 @@ export default function DataTable<TData, TValue>({
   
   return (
     <div className='space-y-4 hidden md:block'>
+            <div className="flex items-center">
+        <Input
+          placeholder="Filter hosts..."
+          value={(table.getColumn("url")?.getFilterValue() as string) ?? ""}
+          onChange={(event) =>
+            table.getColumn("url")?.setFilterValue(event.target.value)
+          }
+          className="max-w-sm"
+        />
+      </div>
     <div className='border rounded text-xs'>
       <Table className='text-xs'>
         <TableHeader className=''>
