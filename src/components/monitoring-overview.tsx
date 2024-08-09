@@ -14,24 +14,13 @@ export default async function MonitoringOverview({ website }: { website: Website
 
   const host = new URL(website.url).hostname;
 
-  try {
-    const response = await fetch(
+
+  const response = await fetch(
       `${process.env.URL}/api/whoIs?host=${encodeURIComponent(host)}`
     );
 
-    console.log('Response:', response);
-
-    if (!response.ok) {
-      console.error('Failed to fetch WHOIS data:', response.status, response.statusText);
-      return;
-    }
-
     const data = await response.json();
     console.log('WHOIS data:', data);
-
-  } catch (error) {
-    console.error('Error fetching WHOIS data:', error);
-  }
 
   return (
     <div className='flex min-h-screen w-full flex-col'>
@@ -47,6 +36,7 @@ export default async function MonitoringOverview({ website }: { website: Website
             </CardHeader>
             <CardContent>
               <ResponseTimeChart healthChecks={website.healthChecks} />
+              <p>{data.domainName}</p>
             </CardContent>
           </Card>
         </main>
