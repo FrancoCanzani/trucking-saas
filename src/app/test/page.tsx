@@ -1,4 +1,5 @@
-// components/ScraperComponent.js
+'use client'
+
 import { useEffect, useState } from 'react';
 
 export default function ScraperComponent() {
@@ -7,7 +8,7 @@ export default function ScraperComponent() {
   useEffect(() => {
     async function fetchContent() {
       try {
-        const response = await fetch('/api/scrape');
+        const response = await fetch('/api/pupeteer');
         const result = await response.text();
         setContent(result);
       } catch (error) {
@@ -17,6 +18,8 @@ export default function ScraperComponent() {
     fetchContent();
   }, []);
 
+  console.log(content);
+  
   return (
     <div>
       <h1>Scraped Content</h1>
