@@ -81,7 +81,7 @@ export default async function Page({ params }: { params: { id: number } }) {
     
     return (
         <div>
-            {website ? <MonitoringOverview website={website} /> : <p>Website not found.</p>}
+            {<MonitoringOverview website={website} />}
         </div>
     );
 }
