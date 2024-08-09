@@ -36,6 +36,7 @@
     "recharts": "^2.12.7",
     "resend": "^3.5.0",
     "sonner": "^1.5.0",
+    "ssl-checker": "^2.0.10",
     "svix": "^1.28.0",
     "tailwind-merge": "^2.4.0",
     "tailwindcss-animate": "^1.0.7",

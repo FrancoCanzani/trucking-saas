@@ -15,17 +15,22 @@ export default async function MonitoringOverview({ website }: { website: Website
   const host = new URL(website.url).hostname;
   console.log(host);
   
-  let data
+  let data;
 
   try {
     const response = await fetch(
-      `${process.env.URL}/api/whoIs?host=${encodeURIComponent(host)}`
+      `${process.env.URL}/api/sslCheck?host=${encodeURIComponent(host)}`
     );
 
-    data = await response.json();
-    console.log('WHOIS data:', data);
+    if (response.ok) {
+      data = await response.json();
+      console.log('SSL data:', data);
+    } else {
+      console.error(`Failed to fetch SSL data: ${response.status} ${response.statusText}`);
+      // Handle non-OK responses (like 404 or 500) as needed
+    }
   } catch (error) {
-    console.error(error)
+    console.error('Error fetching SSL data:', error);
   }
 
   return (
@@ -42,7 +47,7 @@ export default async function MonitoringOverview({ website }: { website: Website
             </CardHeader>
             <CardContent>
               <ResponseTimeChart healthChecks={website.healthChecks} />
-              <p>{data && data.domainName}</p>
+              <p>{data && data.daysRemaining ? `Days Remaining: ${data.daysRemaining}` : 'No SSL data available'}</p>
             </CardContent>
           </Card>
         </main>
