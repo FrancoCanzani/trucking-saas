@@ -1,3 +1,5 @@
+'use client'
+
 import { Website } from '@/lib/types';
 import { createHealthCheck } from '@/lib/actions';
 import { toast } from 'sonner';
@@ -12,7 +14,7 @@ export default function CheckWebsiteButton({
   className?: string;
   children: React.ReactNode;
 }) {
-  async function handleSubmit() {
+  async function handleClick() {
     try {
       const healthCheckPromise = createHealthCheck(website);
 
@@ -27,9 +29,14 @@ export default function CheckWebsiteButton({
       toast.error('Error performing the health check.');
     }
   }
+
   return (
-    <form action={handleSubmit}>
-      <button className={cn('', className)}>{children}</button>
-    </form>
+    <button
+      type="button"
+      className={cn('', className)}
+      onClick={handleClick}
+    >
+      {children}
+    </button>
   );
 }

@@ -8,12 +8,12 @@ import {
 import { Website } from '@/lib/types';
 import Header from './header';
 import ResponseTimeChart from './charts/response-time-chart';
+import CheckWebsiteButton from './check-website-button';
 
 export default async function MonitoringOverview({ website }: { website: Website | undefined }) {
   if (!website) return null;
 
   const host = new URL(website.url).hostname;
-  console.log(host);
   
   let data;
 
@@ -24,11 +24,7 @@ export default async function MonitoringOverview({ website }: { website: Website
 
     if (response.ok) {
       data = await response.json();
-      console.log('SSL data:', data);
-    } else {
-      console.error(`Failed to fetch SSL data: ${response.status} ${response.statusText}`);
-      // Handle non-OK responses (like 404 or 500) as needed
-    }
+    } 
   } catch (error) {
     console.error('Error fetching SSL data:', error);
   }
@@ -44,10 +40,11 @@ export default async function MonitoringOverview({ website }: { website: Website
                 <CardTitle>Overview</CardTitle>
                 <CardDescription>{website.url}</CardDescription>
               </div>
+              <CheckWebsiteButton website={website}>Check now</CheckWebsiteButton>
             </CardHeader>
             <CardContent>
               <ResponseTimeChart healthChecks={website.healthChecks} />
-              <p>{data && data.daysRemaining ? `Days Remaining: ${data.daysRemaining}` : 'No SSL data available'}</p>
+              <p>{data && data.daysRemaining}</p>
             </CardContent>
           </Card>
         </main>
