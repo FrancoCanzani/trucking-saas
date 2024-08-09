@@ -9,6 +9,12 @@ import { Website } from '@/lib/types';
 import Header from './header';
 import ResponseTimeChart from './charts/response-time-chart';
 import CheckWebsiteButton from './check-website-button';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 export default async function MonitoringOverview({ website }: { website: Website | undefined }) {
   if (!website) return null;
@@ -38,7 +44,18 @@ export default async function MonitoringOverview({ website }: { website: Website
             <CardHeader className='flex flex-row items-end justify-between w-full'>
               <div className='hidden sm:block space-y-2'>
                 <CardTitle>Overview</CardTitle>
-                <CardDescription>{website.url}</CardDescription>
+                <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                  <CardDescription className='underline'>{website.url}</CardDescription>
+                  </TooltipTrigger>
+                  {
+                    data && <TooltipContent>
+                    {data.valid ? <p>{`Valid SSL certificate - Expires in ${data.daysRemaining} days`}</p> : <p className='text-red-500'>{`Invalid SSL certificate`}</p> }
+                  </TooltipContent>
+                  }
+                </Tooltip>
+              </TooltipProvider>
               </div>
               <CheckWebsiteButton website={website}>Check now</CheckWebsiteButton>
             </CardHeader>
