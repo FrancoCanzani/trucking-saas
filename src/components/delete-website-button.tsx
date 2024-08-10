@@ -12,7 +12,7 @@ export default function DeleteWebsiteButton({
   className?: string;
   children: React.ReactNode;
 }) {
-  async function handleSubmit() {
+  async function handleClick() {
     try {
       const healthCheckPromise = deleteWebsite(website.id);
 
@@ -28,8 +28,8 @@ export default function DeleteWebsiteButton({
     }
   }
   return (
-    <form action={handleSubmit}>
-      <button className={cn('text-red-600', className)}>{children}</button>
-    </form>
+    <button onClick={handleClick} className={cn('text-red-600', className)}>
+      {children}
+    </button>
   );
 }

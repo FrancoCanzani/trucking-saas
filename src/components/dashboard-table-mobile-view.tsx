@@ -63,7 +63,7 @@ export default function DashboardTableMobileView({
             <p className='text-sm text-gray-600'>
               Check Interval: {website.check_interval} days
             </p>
-            <div className='flex items-center justify-end space-x-2'>
+            <div className='inline-flex space-x-3'>
               <CheckWebsiteButton
                 website={website}
                 className='text-xs hover:underline font-medium'
