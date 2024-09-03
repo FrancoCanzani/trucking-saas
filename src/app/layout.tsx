@@ -1,14 +1,13 @@
-import './globals.css';
-import type { Metadata } from 'next';
-import { Inter} from 'next/font/google';
-import { Toaster } from 'sonner';
-import { ClerkProvider } from '@clerk/nextjs';
+import "./globals.css";
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import { Toaster } from "sonner";
 
-const inter = Inter({ subsets: ['vietnamese'] });
+const inter = Inter({ subsets: ["vietnamese"] });
 
 export const metadata: Metadata = {
-  title: 'Health Checker',
-  description: 'Sleep well',
+  title: "Health Checker",
+  description: "Sleep well",
 };
 
 export default function RootLayout({
@@ -17,13 +16,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <ClerkProvider>
-      <html lang='en'>
-        <body className={`${inter.className}`}>
-          {children}
-          <Toaster />
-        </body>
-      </html>
-    </ClerkProvider>
+    <html lang="en">
+      <body className={`${inter.className}`}>
+        {children}
+        <Toaster />
+      </body>
+    </html>
   );
 }
