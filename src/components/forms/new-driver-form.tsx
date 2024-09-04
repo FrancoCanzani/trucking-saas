@@ -59,7 +59,9 @@ export default function NewDriverForm({
   return (
     <Sheet open={isNewDriverOpen} onOpenChange={setIsNewDriverOpen}>
       <SheetTrigger asChild>
-        <Button>New Driver</Button>
+        <Button size={"xs"} variant={"minimal"}>
+          New Driver
+        </Button>
       </SheetTrigger>
       <SheetContent>
         <SheetHeader className="mb-2">

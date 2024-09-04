@@ -63,7 +63,9 @@ export default function NewClientForm({
   return (
     <Sheet open={isNewClientOpen} onOpenChange={setIsNewClientOpen}>
       <SheetTrigger asChild>
-        <Button>New Client</Button>
+        <Button size={"xs"} variant={"minimal"}>
+          New Client
+        </Button>
       </SheetTrigger>
       <SheetContent>
         <SheetHeader className="mb-2">

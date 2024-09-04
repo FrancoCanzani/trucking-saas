@@ -105,7 +105,9 @@ export default function NewLoadForm({
   return (
     <Sheet open={isNewLoadOpen} onOpenChange={setIsNewLoadOpen}>
       <SheetTrigger asChild>
-        <Button>New Load</Button>
+        <Button size={"xs"} variant={"minimal"}>
+          New Load
+        </Button>
       </SheetTrigger>
       <SheetContent>
         <SheetHeader className="mb-2">

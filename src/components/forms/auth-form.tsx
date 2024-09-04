@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { GitHubLogoIcon } from "@radix-ui/react-icons";
 
 type AuthFormProps = {
   type: "login" | "register";
@@ -39,15 +40,16 @@ export function AuthForm({ type }: AuthFormProps) {
     }
   };
 
-  const handleGoogleSignIn = async () => {
+  const handleOAuthSignIn = async (provider: "google" | "github") => {
     setError(null);
     setMessage(null);
 
     const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
+      provider,
       options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
         queryParams:
-          type === "register"
+          type === "register" && provider === "google"
             ? {
                 access_type: "offline",
                 prompt: "consent",
@@ -112,8 +114,21 @@ export function AuthForm({ type }: AuthFormProps) {
         <span className="text-gray-500">or</span>
       </div>
 
-      <Button onClick={handleGoogleSignIn} className="w-full" variant="outline">
+      <Button
+        onClick={() => handleOAuthSignIn("google")}
+        className="w-full"
+        variant="outline"
+      >
         {type === "login" ? "Sign in" : "Register"} with Google
+      </Button>
+
+      <Button
+        onClick={() => handleOAuthSignIn("github")}
+        className="w-full"
+        variant="outline"
+      >
+        <GitHubLogoIcon className="mr-2 h-4 w-4" />
+        {type === "login" ? "Sign in" : "Register"} with GitHub
       </Button>
 
       {error && (
