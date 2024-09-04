@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -10,17 +9,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import NewLoadForm from "@/components/forms/new-load-form";
+import NewDriverForm from "@/components/forms/new-driver-form";
+import NewClientForm from "@/components/forms/new-client-form";
 
 const mockLoads = [
   {
@@ -63,46 +54,25 @@ const mockLoads = [
 export default function Dashboard() {
   const [isNewLoadOpen, setIsNewLoadOpen] = useState(false);
   const [isNewDriverOpen, setIsNewDriverOpen] = useState(false);
+  const [isNewClientOpen, setIsNewClientOpen] = useState(false);
 
   return (
     <div className="container mx-auto p-4">
       <header className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Trucking SaaS Dashboard</h1>
+        <h1 className="text-2xl font-bold">Dashboard</h1>
         <div className="space-x-2">
           <NewLoadForm
             isNewLoadOpen={isNewLoadOpen}
             setIsNewLoadOpen={setIsNewLoadOpen}
           />
-          <Sheet open={isNewDriverOpen} onOpenChange={setIsNewDriverOpen}>
-            <SheetTrigger asChild>
-              <Button>New Driver</Button>
-            </SheetTrigger>
-            <SheetContent>
-              <SheetHeader>
-                <SheetTitle>Add New Driver</SheetTitle>
-                <SheetDescription>
-                  Enter the details for the new driver.
-                </SheetDescription>
-              </SheetHeader>
-              <div className="grid gap-4 py-4">
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="name" className="text-right">
-                    Name
-                  </Label>
-                  <Input id="name" className="col-span-3" />
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="license" className="text-right">
-                    License Number
-                  </Label>
-                  <Input id="license" className="col-span-3" />
-                </div>
-              </div>
-              <Button onClick={() => setIsNewDriverOpen(false)}>
-                Add Driver
-              </Button>
-            </SheetContent>
-          </Sheet>
+          <NewDriverForm
+            isNewDriverOpen={isNewDriverOpen}
+            setIsNewDriverOpen={setIsNewDriverOpen}
+          />
+          <NewClientForm
+            isNewClientOpen={isNewClientOpen}
+            setIsNewClientOpen={setIsNewClientOpen}
+          />
         </div>
       </header>
 
