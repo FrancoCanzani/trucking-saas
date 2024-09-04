@@ -74,8 +74,8 @@ export default function NewClientForm({
             Enter the details for the new client.
           </SheetDescription>
         </SheetHeader>
-        <ScrollArea className="h-[calc(100vh-150px)] pr-3.5">
-          <div className="flex flex-col gap-4 p-1">
+        <ScrollArea className="h-[calc(100vh-150px)] pr-3.5 pt-3.5">
+          <div className="flex flex-col gap-4 p-1 space-y-2">
             <div className="space-y-2">
               <Label htmlFor="companyName" className="text-gray-500">
                 Company Name
@@ -191,7 +191,11 @@ export default function NewClientForm({
           </div>
         </ScrollArea>
         <div className="mt-4">
-          <Button onClick={handleSubmit} className="w-full">
+          <Button
+            onClick={handleSubmit}
+            className="w-full bg-gray-950 hover:bg-gray-900 text-white hover:text-gray-50"
+            variant={"outline"}
+          >
             Add Client
           </Button>
         </div>

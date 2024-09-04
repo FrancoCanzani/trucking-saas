@@ -116,8 +116,8 @@ export default function NewLoadForm({
             Enter the details for the new load.
           </SheetDescription>
         </SheetHeader>
-        <ScrollArea className="h-[calc(100vh-150px)] pr-3.5">
-          <div className="flex flex-col gap-4 p-1">
+        <ScrollArea className="h-[calc(100vh-150px)] pr-3.5 pt-3.5">
+          <div className="flex flex-col gap-4 p-1 space-y-2">
             <div className="flex flex-col items-start justify-center gap-4">
               <Label htmlFor="client" className="text-gray-500 text-start">
                 Client
@@ -164,24 +164,33 @@ export default function NewLoadForm({
                       size="icon"
                       onClick={() => removeLocation(index)}
                     >
-                      <MinusIcon className="h-4 w-4" />
+                      <MinusIcon className="h-4 w-3" />
                     </Button>
                   </div>
                 </div>
               </div>
             ))}
             <div className="flex justify-between items-center">
-              <Button onClick={() => addLocation("pickup")} variant="outline">
-                <PlusIcon className="mr-2 h-4 w-4" /> Add Pickup
+              <Button
+                onClick={() => addLocation("pickup")}
+                variant="outline"
+                size={"xs"}
+              >
+                <PlusIcon className="mr-1.5 h-4 w-4" /> Add Pickup
               </Button>
-              <Button onClick={() => addLocation("dropoff")} variant="outline">
-                <PlusIcon className="mr-2 h-4 w-4" /> Add Dropoff
+              <Button
+                onClick={() => addLocation("dropoff")}
+                variant="outline"
+                size={"xs"}
+              >
+                <PlusIcon className="mr-1.5 h-4 w-4" /> Add Dropoff
               </Button>
             </div>
 
             <Button
               onClick={() => setIsDetailsVisible(!isDetailsVisible)}
               variant="outline"
+              size={"xs"}
               className="w-full"
             >
               {isDetailsVisible ? "Hide Load Details" : "Show Load Details"}
@@ -308,11 +317,12 @@ export default function NewLoadForm({
                 />
                 <Button
                   variant="outline"
+                  size={"xs"}
                   onClick={() =>
                     document.getElementById("rate-confirmation")?.click()
                   }
                 >
-                  <UploadIcon className="mr-2 h-4 w-4" />
+                  <UploadIcon className="mr-1.5 h-4 w-4" />
                   Upload File
                 </Button>
                 {rateConfirmation && (
@@ -325,7 +335,11 @@ export default function NewLoadForm({
           </div>
         </ScrollArea>
         <div className="mt-4">
-          <Button onClick={handleSubmit} className="w-full">
+          <Button
+            onClick={handleSubmit}
+            className="w-full bg-gray-950 hover:bg-gray-900 text-white hover:text-gray-50"
+            variant={"outline"}
+          >
             Add Load
           </Button>
         </div>
