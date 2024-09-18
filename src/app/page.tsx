@@ -1,9 +1,9 @@
 import SentimentAnalysis from "@/components/sentiment-analysis";
 
-export default async function Home() {
+export default function Home() {
   return (
-    <main className="p-3 md:p-6 space-y-8 max-w-4xl m-auto">
-      <h1 className="text-3xl font-bold">Tweet Sentiment Analysis</h1>
+    <main className="container mx-auto p-4 space-y-8 max-w-3xl">
+      <h1 className="text-4xl font-bold tracking-tight">Tweet Analysis</h1>
       <SentimentAnalysis />
     </main>
   );
