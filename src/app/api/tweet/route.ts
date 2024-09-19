@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getTweet, Tweet } from "react-tweet/api";
+import { getTweet } from "react-tweet/api";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
