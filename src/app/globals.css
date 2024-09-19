@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+.tweet-wrapper > div,
+.tweet-wrapper .react-tweet {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;

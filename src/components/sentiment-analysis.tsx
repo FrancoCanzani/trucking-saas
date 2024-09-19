@@ -26,6 +26,7 @@ export default function SentimentAnalysisContainer() {
   const [error, setError] = useState<string | null>(null);
   const [tweetData, setTweetData] = useState<TweetType | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  console.log(tweetData);
 
   const workerRef = useRef<Worker | null>(null);
 
@@ -100,7 +101,13 @@ export default function SentimentAnalysisContainer() {
         ) : (
           <SentimentResult result={result} ready={ready} error={error} />
         )}
-        {tweetData && <Tweet id={tweetData.id_str} />}
+        {tweetData && (
+          <div className="w-full mx-auto">
+            <div className="tweet-wrapper [&>div]:w-full [&>div]:max-w-full [&_.react-tweet]:w-full [&_.react-tweet]:max-w-full">
+              <Tweet id={tweetData.id_str} />
+            </div>
+          </div>
+        )}
       </CardContent>
     </Card>
   );

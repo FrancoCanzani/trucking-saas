@@ -3,7 +3,6 @@
 import { FormEvent, useState, Dispatch, SetStateAction } from "react";
 import { Tweet as TweetType } from "react-tweet/api";
 import extractTweetId from "@/lib/helpers/extract-tweet-id";
-import fetchTweet from "@/lib/actions/fetch-tweet";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -24,7 +23,9 @@ export default function TweetForm({ tweetData, setTweetData }: TweetFormProps) {
 
     if (tweetId) {
       try {
-        const data = await fetchTweet(tweetId);
+        const response = await fetch(`/api/tweet?tweetId=${tweetId}`);
+        const data = await response.json();
+
         if (data.error) {
           setError(data.error);
         } else if (data.tweet) {
