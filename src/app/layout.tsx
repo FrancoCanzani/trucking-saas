@@ -6,8 +6,7 @@ import { Toaster } from "sonner";
 const karla = Karla({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Health Checker",
-  description: "Sleep well",
+  title: "Twitter AI tools",
 };
 
 export default function RootLayout({

@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getTweet } from "react-tweet/api";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const tweetId = searchParams.get("tweetId");
